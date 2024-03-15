@@ -7,20 +7,6 @@ from abc import ABC, abstractmethod
 import attrs
 
 from ..utils.fileIO._handling import copy_file
-from ..utils.string import indent
-
-
-@attrs.define
-class HTMLStringContent():
-    header: Optional[str] = attrs.field(
-        default=None,
-        validator=[attrs.validators.optional(attrs.validators.instance_of(str))])
-    body: Optional[str] = attrs.field(
-        default=None,
-        validator=attrs.validators.instance_of(str))
-    footer: Optional[str] = attrs.field(
-        default=None,
-        validator=[attrs.validators.optional(attrs.validators.instance_of(str))])
 
 
 class HTMLExtraFile(ABC):
@@ -28,6 +14,10 @@ class HTMLExtraFile(ABC):
     @abstractmethod
     def export(self, output_dir: Path):
         """export method to be implemented by the subclass"""
+
+    @abstractmethod
+    def get_status(self) -> str:
+        """Returns the status of the file"""
 
 @attrs.define
 class HTMLAdditionalFile(HTMLExtraFile):
@@ -54,7 +44,7 @@ class HTMLAdditionalFile(HTMLExtraFile):
             'description': 'The name of the file with extension in the output directory.'})
 
     directory_name: Optional[str] = attrs.field(
-        default=None,
+        factory=None,
         validator=[attrs.validators.optional(attrs.validators.instance_of(str))],
         kw_only=True,
         metadata={
@@ -63,6 +53,14 @@ class HTMLAdditionalFile(HTMLExtraFile):
         )
 
     def post_init(self):
+        """
+        Performs post-initialization tasks.
+
+        This method checks if the original file exists. If it doesn't, it raises a FileNotFoundError.
+
+        Raises:
+            FileNotFoundError: If the original file does not exist.
+        """
         #check if the original file exists
         if not self.original_file.exists():
             raise FileNotFoundError(f"The file {self.original_file} does not exist.")
@@ -80,10 +78,11 @@ class HTMLAdditionalFile(HTMLExtraFile):
             source_path=self.original_file,
             destination_path=target_file)
 
+    def get_status(self) -> str:
+        return f"File {self.original_file} has been copied to {self.directory_name}/{self.filename}."
+
 
 class HTMLComponent(ABC):
-    _DEFAULT_INDENT_LEVEL = 4
-    _DEFAULT_INDENT_CHAR = ' '
 
     @abstractmethod
     def render(self) -> str:

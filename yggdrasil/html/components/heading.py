@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from .__text import Text
+from .text import Text
 from ._blocks import InlineHTMLBlock
 from .__validate_attributes import validate_html_attribute
 from ...utils.string import generate_unique_id

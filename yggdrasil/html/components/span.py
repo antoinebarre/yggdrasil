@@ -3,7 +3,7 @@
 from typing import Optional
 import attrs
 from ._blocks import InlineHTMLBlock
-from .__text import Text
+from .text import Text
 from .__validate_attributes import validate_html_attribute
 
 @attrs.define

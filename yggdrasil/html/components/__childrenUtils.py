@@ -3,7 +3,7 @@
 
 from typing import Iterable
 from ..base import HTMLComponent
-from .__text import Text
+from .text import Text
 
 def get_children(children : Iterable[HTMLComponent | str ]) -> list[HTMLComponent]:
     """

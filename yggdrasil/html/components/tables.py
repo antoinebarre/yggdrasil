@@ -11,9 +11,14 @@ import attrs
 
 from ..base import  HTMLComponent, HTMLExtraFile
 from .__extrafiles import collect_additional_files
-from .__text import Text
+from .text import Text
 from ._blocks import HTMLBlock
 from .__childrenUtils import get_children
+
+__all__=[
+    "TableColumn",
+    "Table"
+]
 
 # ============================ TABLE COMPONENTS ============================ #
 
@@ -42,6 +47,10 @@ class TableColumn():
     width_percent: Optional[int] = None
 
     #TODO : change this class to ATTRS
+    
+    # TODO : create a table from dataframe
+    
+    # TODO : add class for horizontal table
 
     def length(self) -> int:
         """
@@ -337,9 +346,6 @@ class Table(HTMLComponent):
 
         if self.width_percent:
             style_attribute += f"width:{self.width_percent}%;"
-
-        if style_attribute:
-            style_attribute = f' style="{style_attribute}"'
 
         return style_attribute
 

@@ -1,57 +1,65 @@
-"""Function to create a link component."""
-
-from typing import Literal, Optional
-from ._blocks import InlineHTMLBlock, InlineHTMLComponent
-from .__childrenUtils import get_children
 
 
-ALLOWED_ATTRIBUTES = ['class']
+import importlib.resources as pkg_resources
+from pathlib import Path
 
-allowedComponentsType = str | InlineHTMLComponent | InlineHTMLBlock
 
-def Link(  # pylint: disable=invalid-name
-        *,
-        component: allowedComponentsType,
-        link: str,
-        target: Optional[Literal['_blank', '_self', '_parent', '_top']] = None,
-        attributes: Optional[dict[str, str]] = None) -> InlineHTMLBlock:
+from ...validation.fileIO import validate_file_extension
+from ..base import HTMLAdditionalFile
+from ._blocks import InlineHTMLComponent
+
+
+__all__ = ['CSSStyleSheet', 'default_css_stylesheet']
+
+STYLE_DIRECTORY= 'styles'
+
+def CSSStyleSheet(
+    filepath: Path
+    ) -> InlineHTMLComponent:
     """
-    Create an HTML link element.
+    Create a CSS style sheet component with the specified file path.
 
     Args:
-        component (allowedComponentsType): The component to be linked.
-        link (str): The URL of the link.
-        target (Optional[Literal['_blank', '_self', '_parent', '_top']]): The target
-        attribute of the link.
-        attribustes (Optional[dict[str, str]]): Additional attributes for the link.
+        filepath (Path): The path to the CSS file.
 
     Returns:
-        HTMLBlock: The HTML link element.
+        InlineHTMLComponent: The CSS style sheet component.
 
     Raises:
-        ValueError: If an invalid attribute is provided in `attribustes`.
-
+        FileNotFoundError: If the CSS file does not exist.
     """
-    # manage the nature of the component
-    component_as_list = get_children([component])
+    # check if the file exists
+    if not filepath.is_file():
+        raise FileNotFoundError(f"The file {filepath} does not exist.")
 
-    # create attributes
-    block_attributes = {'href': link}
+    # validate the file extension
+    filepath = validate_file_extension(filepath, ['.css'])
 
-    if target:
-        block_attributes['target'] = target
-
-    if attributes:
-        for key in attributes:
-            if key not in ALLOWED_ATTRIBUTES:
-                raise ValueError(
-                    f"Invalid attribute '{key}' " +
-                    f"for link. Allowed attributes are {ALLOWED_ATTRIBUTES}"
-                    )
-            block_attributes[key] = attributes[key]
-
-    return InlineHTMLBlock(  #pylint: disable=unexpected-keyword-arg
-        tag_name='a',
-        component=component_as_list[0],
-        attributes=block_attributes
+    # instantiate the CSS style sheet component
+    css = InlineHTMLComponent(  # pylint: disable=unexpected-keyword-arg
+        tag_name='link'
     )
+
+    # add the CSS file to the list of additional files
+    css.add_additional_file(
+        HTMLAdditionalFile(
+            original_file = filepath,
+            filename = filepath.name,
+            directory_name = STYLE_DIRECTORY
+    ))
+
+    # add the rel attribute
+    css.add_attribute('rel', 'stylesheet')
+
+    # add the type attribute
+    css.add_attribute('type', 'text/css')
+
+    # add the href attribute
+    css.add_attribute('href', f"{STYLE_DIRECTORY}/{filepath.name}")
+
+    return css
+
+def default_css_stylesheet():
+    with pkg_resources.path("yggdrasil.html.templates", "report.css") as css_path:
+        # css_path is a Path object that can be used within this block
+        return CSSStyleSheet(Path(css_path))

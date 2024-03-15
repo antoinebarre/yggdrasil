@@ -1,5 +1,10 @@
 """Collection of functions for validating integer values."""
 
+__all__ = [
+    'validate_integer',
+    'validate_positive_integer',
+]
+
 def validate_integer(value: int) -> int:
     """
     Validates if the given value is an integer.

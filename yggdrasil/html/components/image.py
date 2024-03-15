@@ -5,7 +5,7 @@ from typing import Optional
 from beartype import beartype
 
 from yggdrasil.validation.fileIO import validate_file_extension
-from ._blocks import InlineHTMLComponent
+from ._blocks import InlineHTMLComponent, HTMLBlock
 from ..base import HTMLAdditionalFile
 
 __all__ = ["Image"]
@@ -18,10 +18,11 @@ IMAGE_HTML_TAG = 'img'
 def Image(  # pylint: disable=invalid-name
     *,
     src_path: Path,
-    alt: str,
+    alt_text: str,
     width: Optional[int]    = None,
     height: Optional[int]   = None,
-    ) -> InlineHTMLComponent:
+    legend: Optional[str]   = None
+    ) -> HTMLBlock:
     """
     Create an image component with the specified source path, alt text, width, and height.
 
@@ -43,6 +44,42 @@ def Image(  # pylint: disable=invalid-name
     # check if the file exists
     if not src_path.is_file():
         raise FileNotFoundError(f"The file {src_path} does not exist.")
+    # create the figure component
+    fig = HTMLBlock(tag_name='figure')
+
+    # add the image component
+    fig.add_components(__create_img(src_path, alt_text, width, height))
+
+    # add the legend component if specified
+    if legend:
+        caption = HTMLBlock(tag_name='figcaption')
+        caption.add_components(legend)
+        fig.add_components(caption)
+
+    return fig
+
+
+def __create_img(
+    src_path: Path,
+    alt_text: str,
+    width: Optional[int],
+    height: Optional[int]
+) -> InlineHTMLComponent:
+    """
+    Create an image component with the specified source path, alt text, width, and height.
+
+    Args:
+        src_path (Path): The path to the image file.
+        alt (str): The alternative text for the image.
+        width (Optional[int]): The width of the image (default: None).
+        height (Optional[int]): The height of the image (default: None).
+
+    Returns:
+        InlineHTMLComponent: The image component.
+
+    Raises:
+        FileNotFoundError: If the image file does not exist.
+    """
 
     # instantiate the image component
     img = InlineHTMLComponent(  # pylint: disable=unexpected-keyword-arg
@@ -56,7 +93,10 @@ def Image(  # pylint: disable=invalid-name
     ))
 
     # add the alt attribute
-    img.add_attribute('alt', alt)
+    img.add_attribute('alt', alt_text)
+
+    # add the src attribute
+    img.add_attribute('src', f"{IMAGE_HTML_DIRECTORY}/{src_path.name}")
 
     # add the width attribute
     if width:

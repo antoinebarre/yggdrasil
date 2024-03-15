@@ -2,9 +2,11 @@
 
 
 
+from typing import Optional
 import attrs
 from ...utils.string import indent
 from ..base import HTMLComponent, HTMLExtraFile
+from .__childrenUtils import validate_tag, get_children
 
 
 __all__ = [
@@ -48,6 +50,10 @@ class InlineHTMLComponent(HTMLComponent):
     """
     Represents a generic inline HTML block in an HTML document.
 
+    Exemple of HTML block:
+    '''<img src="img src" alt="img alt" width="500" height="600"/>'''
+
+
     Attributes:
         content (str): The content of the block.
     """
@@ -59,14 +65,14 @@ class InlineHTMLComponent(HTMLComponent):
         kw_only=True)
 
     additional_files:list[HTMLExtraFile] = attrs.field(
-        default=[],
+        factory=list,
         metadata={'description': 'List of additional files to be published'},
         validator=attrs.validators.deep_iterable(
             member_validator=attrs.validators.instance_of(HTMLExtraFile)),
         kw_only=True)
 
     attributes: dict[str, str] = attrs.field(
-        default={},
+        factory=dict,
         metadata={'description': 'The attributes of the block'},
         validator=attrs.validators.deep_mapping(
             key_validator=attrs.validators.instance_of(str),
@@ -164,14 +170,14 @@ class InlineHTMLBlock(HTMLComponent):
         metadata={'description': 'The component to be included in the block'},
         kw_only=True)
     attributes: dict[str, str] = attrs.field(
-        default={},
+        factory=dict,
         metadata={'description': 'The attributes of the block'},
         validator=attrs.validators.deep_mapping(
             key_validator=attrs.validators.instance_of(str),
             value_validator=attrs.validators.instance_of(str)),
         kw_only=True)
     additional_files:list[HTMLExtraFile] = attrs.field(
-        default=[],
+        factory=list,
         metadata={'description': 'List of additional files to be published'},
         validator=attrs.validators.deep_iterable(
             member_validator=attrs.validators.instance_of(HTMLExtraFile)),
@@ -296,7 +302,10 @@ class HTMLBlock(HTMLComponent):
         for file in files:
             self.additional_files.append(file)
 
-    def add_components(self, *components: HTMLComponent):
+    def add_components(
+            self,
+            *components: HTMLComponent | str,
+            allowed_tag: Optional[list[str]] = None):
         """
         Adds a component to the block at the last position.
 
@@ -306,7 +315,17 @@ class HTMLBlock(HTMLComponent):
         Returns:
             None
         """
-        for component in components:
+        # change all string to text component
+        children = get_children(list(components))
+
+        # If allowed_tag is not None, check that the tag of the component is in the allowed list
+        if allowed_tag:
+            validate_tag(
+                children=children,
+                allowed_tags=allowed_tag
+            )
+
+        for component in children:
             self.children.append(component)
 
     def get_additional_files(self) -> list[HTMLExtraFile]:
@@ -357,6 +376,9 @@ class HTMLBlock(HTMLComponent):
             suffix=f'</{self.tag_name}>',
             inline=False
         )
+        
+    def get_extra_files_info(self)-> str:
+        return '\n'.join([file.get_status() for file in self.get_additional_files()])
 
     def get_tag(self) -> str:
         """
