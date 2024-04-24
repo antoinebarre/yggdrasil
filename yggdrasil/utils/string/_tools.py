@@ -2,9 +2,11 @@
 
 
 import re
+import unicodedata
 
 __all__ = [
-    "remove_blank_lines"]
+    "remove_blank_lines",
+    "normalize_string"]
 
 def remove_blank_lines(text:str)->str:
     """
@@ -37,3 +39,21 @@ def remove_blank_lines(text:str)->str:
     # Removing any extra newlines left after removing blank lines
     clean_text = re.sub(r'\n+', '\n', clean_text).strip()
     return clean_text
+
+def normalize_string(text: str) -> str:
+    """
+    Normalize a string by decomposing accented characters and removing accents.
+
+    Args:
+      text (str): The input string to be normalized.
+
+    Returns:
+      str: The normalized string with accents removed.
+
+    """
+    # Normalize the input text to decompose the accented characters
+    normalized = unicodedata.normalize('NFKD', text)
+    # Remove the accents by filtering out the non-spacing marks
+    normalized = ''.join([char for char in normalized if not unicodedata.combining(char)])
+
+    return normalized.lower()

@@ -11,4 +11,6 @@ from .article import *
 from .link import *
 from .tables import *
 from .title import *
+from .plot import *
+from .breakline import *
 

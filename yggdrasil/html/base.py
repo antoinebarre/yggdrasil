@@ -22,7 +22,7 @@ class HTMLExtraFile(ABC):
 @attrs.define
 class HTMLAdditionalFile(HTMLExtraFile):
     """
-    Represents an additional HTML file to be included in the output directory.
+    Represents an additional file to be included in the output directory.
 
     Attributes:
         original_file (Path): The original file to be copied to the output directory.
@@ -65,7 +65,7 @@ class HTMLAdditionalFile(HTMLExtraFile):
         if not self.original_file.exists():
             raise FileNotFoundError(f"The file {self.original_file} does not exist.")
 
-    def export(self, output_dir: Path):
+    def export(self, output_dir: Path) -> None:
 
         # Create the target directory if it does not exist
         target_dir = output_dir / self.directory_name if self.directory_name else output_dir
