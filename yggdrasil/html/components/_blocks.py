@@ -11,7 +11,6 @@ from .__childrenUtils import validate_tag, get_children
 
 __all__ = [
     'HTMLBlock',
-    'InlineHTMLBlock',
     'InlineHTMLComponent'
 ]
 DEFAULT_INDENT_LEVEL = 4
@@ -64,11 +63,10 @@ class InlineHTMLComponent(HTMLComponent):
         metadata={'description': 'The tag name of the block'},
         kw_only=True)
 
-    additional_files:list[HTMLExtraFile] = attrs.field(
-        factory=list,
-        metadata={'description': 'List of additional files to be published'},
-        validator=attrs.validators.deep_iterable(
-            member_validator=attrs.validators.instance_of(HTMLExtraFile)),
+    additional_file:HTMLExtraFile = attrs.field(
+        factory=None,
+        metadata={'description': 'additional file to be published'},
+        validator=attrs.validators.instance_of(HTMLExtraFile),
         kw_only=True)
 
     attributes: dict[str, str] = attrs.field(
@@ -78,19 +76,6 @@ class InlineHTMLComponent(HTMLComponent):
             key_validator=attrs.validators.instance_of(str),
             value_validator=attrs.validators.instance_of(str)),
         kw_only=True)
-
-    def add_additional_file(self, *files: HTMLExtraFile):
-        """
-        Adds a file to the list of additional files to be published.
-
-        Args:
-            file (HTMLExtraFile): The file to be added.
-
-        Returns:
-            None
-        """
-        for file in files:
-            self.additional_files.append(file)
 
     def add_attribute(self, key: str, value: str):
         """
@@ -130,115 +115,7 @@ class InlineHTMLComponent(HTMLComponent):
         Returns:
             list[HTMLExtraFile]: List of additional files.
         """
-        return self.additional_files
-
-    def get_tag(self) -> str:
-        """
-        Returns the tag name of the HTML component.
-
-        :return: The tag name as a string.
-        """
-        return self.tag_name
-
-@attrs.define
-class InlineHTMLBlock(HTMLComponent):
-    """
-    Represents an inline HTML block.
-
-    Attributes:
-        tag_name (str): The tag name of the block.
-        component (HTMLComponent): The component to be included in the block.
-        attributes (dict[str, str]): The attributes of the block.
-        additional_files (list[HTMLExtraFile]): List of additional files to be published.
-
-    Methods:
-        add_additional_file: Adds a file to the list of additional files to be published.
-        add_attribute: Adds an attribute to the block.
-        render_attributes: Renders the attributes of the block and returns them as a string.
-        render: Renders the block and returns the generated HTML string.
-        get_additional_files: Returns a list of additional files associated with the block.
-    """
-
-    tag_name: str = attrs.field(
-        validator=[
-            attrs.validators.instance_of(str),
-            attrs.validators.min_len(1)],
-        metadata={'description': 'The tag name of the block'},
-        kw_only=True)
-    component:HTMLComponent = attrs.field(
-        validator=attrs.validators.instance_of(HTMLComponent),
-        metadata={'description': 'The component to be included in the block'},
-        kw_only=True)
-    attributes: dict[str, str] = attrs.field(
-        factory=dict,
-        metadata={'description': 'The attributes of the block'},
-        validator=attrs.validators.deep_mapping(
-            key_validator=attrs.validators.instance_of(str),
-            value_validator=attrs.validators.instance_of(str)),
-        kw_only=True)
-    additional_files:list[HTMLExtraFile] = attrs.field(
-        factory=list,
-        metadata={'description': 'List of additional files to be published'},
-        validator=attrs.validators.deep_iterable(
-            member_validator=attrs.validators.instance_of(HTMLExtraFile)),
-        kw_only=True)
-
-    def add_additional_file(self, *files: HTMLExtraFile):
-        """
-        Adds a file to the list of additional files to be published.
-
-        Args:
-            file (HTMLExtraFile): The file to be added.
-
-        Returns:
-            None
-        """
-        for file in files:
-            self.additional_files.append(file)
-
-    def add_attribute(self, key: str, value: str):
-        """
-        Adds an attribute to the block.
-
-        Args:
-            key (str): The key of the attribute.
-            value (str): The value of the attribute.
-
-        Returns:
-            None
-        """
-        self.attributes[key] = value
-
-    def render_attributes(self) -> str:
-        """
-        Renders the attributes of the block and returns them as a string.
-
-        Returns:
-            str: The rendered attributes as a string.
-        """
-        return ' '.join([f'{key}="{value}"' for key, value in self.attributes.items()])
-
-    def render(self) -> str:
-        """
-        Renders the block and returns the generated HTML string.
-
-        Returns:
-            str: The generated HTML string.
-        """
-        return _create_string_block(
-            prefix=f'<{self.tag_name} {self.render_attributes()}>',
-            content=self.component.render(),
-            suffix=f'</{self.tag_name}>',
-            inline=True)
-
-    def get_additional_files(self) -> list[HTMLExtraFile]:
-        """
-        Returns a list of additional files associated with the block.
-
-        Returns:
-            list[HTMLExtraFile]: List of additional files.
-        """
-        return self.additional_files
+        return [self.additional_file]
 
     def get_tag(self) -> str:
         """
@@ -274,11 +151,10 @@ class HTMLBlock(HTMLComponent):
         metadata={'description': 'List of HTML components that are children of the block'},
         kw_only=True)
 
-    additional_files:list[HTMLExtraFile] = attrs.field(
-        factory=list,
+    additional_file:HTMLExtraFile = attrs.field(
+        default=None,
         metadata={'description': 'List of additional files to be published'},
-        validator=attrs.validators.deep_iterable(
-            member_validator=attrs.validators.instance_of(HTMLExtraFile)),
+        validator=attrs.validators.optional(attrs.validators.instance_of(HTMLExtraFile)),
         kw_only=True)
 
     attributes: dict[str, str] = attrs.field(
@@ -288,19 +164,6 @@ class HTMLBlock(HTMLComponent):
             key_validator=attrs.validators.instance_of(str),
             value_validator=attrs.validators.instance_of(str)),
         kw_only=True)
-
-    def add_additional_file(self, *files: HTMLExtraFile):
-        """
-        Adds a file to the list of additional files to be published.
-
-        Args:
-            file (HTMLExtraFile): The file to be added.
-
-        Returns:
-            None
-        """
-        for file in files:
-            self.additional_files.append(file)
 
     def add_components(
             self,
@@ -335,7 +198,8 @@ class HTMLBlock(HTMLComponent):
         Returns:
             list[HTMLExtraFile]: List of additional files.
         """
-        additional_files = self.additional_files
+        additional_files = [self.additional_file] if self.additional_file else []
+
         if self.children:
             for child in self.children:
                 additional_files.extend(child.get_additional_files())
@@ -376,7 +240,7 @@ class HTMLBlock(HTMLComponent):
             suffix=f'</{self.tag_name}>',
             inline=False
         )
-        
+
     def get_extra_files_info(self)-> str:
         return '\n'.join([file.get_status() for file in self.get_additional_files()])
 

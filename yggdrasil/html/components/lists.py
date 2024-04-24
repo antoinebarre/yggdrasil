@@ -3,7 +3,7 @@
 from typing import Literal, Optional
 
 from ..base import HTMLComponent
-from ._blocks import HTMLBlock, InlineHTMLBlock
+from ._blocks import HTMLBlock
 from .__childrenUtils import get_children, validate_children,validate_tag
 from .__attributesUtils import validate_attributes
 
@@ -11,6 +11,10 @@ __all__ = ["UnorderedList", "OrderedList"]
 
 ALLOWED_ATTRIBUTES_UNORDERED = ['class']
 ALLOWED_TAG_UNORDERED = ["text","span",'a']
+
+
+# TODO : allow nested unordered list
+
 
 def UnorderedList(  # pylint: disable=invalid-name
     *children: HTMLComponent | str,
@@ -46,8 +50,8 @@ def UnorderedList(  # pylint: disable=invalid-name
 
     # change components to list members
     for component in components:
-        member = InlineHTMLBlock(
-            component=component,
+        member = HTMLBlock(
+            children=[component],
             tag_name="li",
         )
         list_component.add_components(member)
@@ -99,8 +103,8 @@ def OrderedList( # pylint: disable=invalid-name
 
     # change components to list members
     for component in components:
-        member = InlineHTMLBlock(
-            component=component,
+        member = HTMLBlock(
+            children=[component],
             tag_name="li",
         )
         list_component.add_components(member)

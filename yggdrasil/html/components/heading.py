@@ -3,7 +3,7 @@
 from typing import Optional
 
 from .text import Text
-from ._blocks import InlineHTMLBlock
+from ._blocks import HTMLBlock
 from .__validate_attributes import validate_html_attribute
 from ...utils.string import generate_unique_id
 
@@ -17,7 +17,7 @@ def h(
     level: int,
     title: str,
     attributes: Optional[dict[str, str]] = None,
-    ) -> InlineHTMLBlock:
+    ) -> HTMLBlock:
     """
     Create an HTML heading element.
 
@@ -44,8 +44,8 @@ def h(
     # add unique id to the heading element
     final_attributes["id"] = f"h{level}_{title.lower().replace(' ', '_')}_{generate_unique_id()}"
 
-    return InlineHTMLBlock(  #pylint: disable=unexpected-keyword-arg
+    return HTMLBlock(  #pylint: disable=unexpected-keyword-arg
         tag_name=f"h{level}",
-        component=Text(title),
+        children=[Text(title)],
         attributes=final_attributes
     )

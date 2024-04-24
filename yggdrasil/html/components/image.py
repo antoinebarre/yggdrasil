@@ -83,14 +83,13 @@ def __create_img(
 
     # instantiate the image component
     img = InlineHTMLComponent(  # pylint: disable=unexpected-keyword-arg
-        tag_name=IMAGE_HTML_TAG)
-
-    # add the image file to the list of additional files
-    img.add_additional_file(HTMLAdditionalFile(
-        original_file = src_path,
-        filename = src_path.name,
-        directory_name = IMAGE_HTML_DIRECTORY
-    ))
+        tag_name=IMAGE_HTML_TAG,
+        additional_file=HTMLAdditionalFile(
+            original_file=src_path,
+            filename=src_path.name,
+            directory_name=IMAGE_HTML_DIRECTORY
+            )
+        )
 
     # add the alt attribute
     img.add_attribute('alt', alt_text)

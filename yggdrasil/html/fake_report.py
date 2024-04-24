@@ -1,8 +1,6 @@
-
-
+"""Example of a fake HTML report created with YGGDRASIL."""
 from pathlib import Path
 import tempfile
-
 
 from ..utils.string import LoremIpsum
 from ..utils.images import create_random_png
@@ -12,9 +10,17 @@ from .components import (Title,h, default_css_stylesheet, Article,
 
 
 
-def create_fake_report(
-    html_file_path: Path,
-    ) -> HTMLDocument:
+def create_fake_report(html_file_path: Path) -> HTMLDocument:
+    """
+    Creates a fake report in HTML format.
+
+    Args:
+        html_file_path (Path): The file path where the HTML report will be saved.
+
+    Returns:
+        HTMLDocument: The generated HTML document.
+
+    """
 
     # create a temporary directory
     temp_dir = tempfile.TemporaryDirectory()
@@ -37,7 +43,7 @@ def create_fake_report(
         title="Introduction")
 
     intro.add_paragraph(
-        "This is a fake report created with Firefly.")
+        "This is a fake report created with YGGDRASIL.")
 
     md.add2body(intro)
 
@@ -127,26 +133,6 @@ def create_fake_report(
     section2.add_components(section22)
 
     md.add2body(section1,section2)
-
-    print("EXTRA FILES INFO:")
-    print(md.header.get_extra_files_info())
-    print(len(md.header.get_additional_files()))
-    
-    for idx in md.header.get_additional_files():
-        print(idx.filename)
-        print(idx.directory_name)
-        print(idx.original_file)
-    
-    print(md.body.get_extra_files_info())
-    print(len(md.body.get_additional_files()))
-    for idx in md.body.get_additional_files():
-        print(idx.filename)
-        print(idx.directory_name)
-        print(idx.original_file)
-    
-    print(md.footer.get_extra_files_info())
-    print(len(md.footer.get_additional_files()))
-        
 
     # publish the fake report
     md.publish(html_file_path)

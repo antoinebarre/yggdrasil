@@ -37,16 +37,13 @@ def CSSStyleSheet(
 
     # instantiate the CSS style sheet component
     css = InlineHTMLComponent(  # pylint: disable=unexpected-keyword-arg
-        tag_name='link'
-    )
-
-    # add the CSS file to the list of additional files
-    css.add_additional_file(
-        HTMLAdditionalFile(
+        tag_name='link',
+        additional_file=HTMLAdditionalFile(
             original_file = filepath,
             filename = filepath.name,
             directory_name = STYLE_DIRECTORY
-    ))
+            )
+        )
 
     # add the rel attribute
     css.add_attribute('rel', 'stylesheet')

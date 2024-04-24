@@ -2,7 +2,7 @@
 
 from typing import Optional
 import attrs
-from ._blocks import InlineHTMLBlock
+from ._blocks import HTMLBlock
 from .text import Text
 from .__validate_attributes import validate_html_attribute
 
@@ -70,7 +70,7 @@ ALLOWED_ATTRIBUTES = ['class']
 def Span(  # pylint: disable=invalid-name
     text: str,
     style: CSS_Style = CSS_Style(),
-    attributes: Optional[dict[str, str]] = None) -> InlineHTMLBlock:
+    attributes: Optional[dict[str, str]] = None) -> HTMLBlock:
     """
     Create a span element with the given text, style, and attributes.
 
@@ -90,7 +90,7 @@ def Span(  # pylint: disable=invalid-name
     if style_string := style.render():
         final_attributes['style'] = style_string
 
-    return InlineHTMLBlock( #pylint: disable=unexpected-keyword-arg
+    return HTMLBlock( #pylint: disable=unexpected-keyword-arg
         tag_name='span',
-        component=Text(text),
+        children=[Text(text)],
         attributes=final_attributes)

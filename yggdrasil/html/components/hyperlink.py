@@ -1,8 +1,9 @@
 """Function to create a link component."""
 
 from typing import Literal, Optional
-from ._blocks import InlineHTMLBlock, InlineHTMLComponent
+from ._blocks import HTMLBlock
 from .__childrenUtils import get_children
+from ..base import HTMLComponent
 
 
 ALLOWED_ATTRIBUTES = ['class']
@@ -11,10 +12,10 @@ ALLOWED_ATTRIBUTES = ['class']
 
 def Hyperlink(  # pylint: disable=invalid-name
         *,
-        component: str | InlineHTMLComponent | InlineHTMLBlock,
+        component: str | HTMLComponent,
         link: str,
         target: Optional[Literal['_blank', '_self', '_parent', '_top']] = None,
-        attributes: Optional[dict[str, str]] = None) -> InlineHTMLBlock:
+        attributes: Optional[dict[str, str]] = None) -> HTMLBlock:
     """
     Create an HTML link element.
 
@@ -33,7 +34,7 @@ def Hyperlink(  # pylint: disable=invalid-name
 
     """
     # manage the nature of the component
-    component_as_list = get_children([component])
+    children = get_children([component])
 
     # create attributes
     block_attributes = {'href': link}
@@ -50,8 +51,8 @@ def Hyperlink(  # pylint: disable=invalid-name
                     )
             block_attributes[key] = attributes[key]
 
-    return InlineHTMLBlock(  #pylint: disable=unexpected-keyword-arg
+    return HTMLBlock(  #pylint: disable=unexpected-keyword-arg
         tag_name='a',
-        component=component_as_list[0],
+        children=children,
         attributes=block_attributes
     )
