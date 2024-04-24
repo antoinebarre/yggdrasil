@@ -4,7 +4,7 @@
 # https://tympanus.net/codrops/2012/11/02/heading-set-styling-with-css/
 
 
-from dataclasses import dataclass
+from dataclasses import KW_ONLY, dataclass
 from typing import Literal, Optional
 import attrs
 
@@ -46,11 +46,9 @@ class TableColumn():
     alignment: Optional[Literal["left", "center", "right"]] = None
     width_percent: Optional[int] = None
 
-    #TODO : change this class to ATTRS
-    
+    # TODO : change this class to ATTRS
     # TODO : create a table from dataframe
-    
-    # TODO : add class for horizontal table
+
 
     def length(self) -> int:
         """
@@ -380,6 +378,193 @@ class Table(HTMLComponent):
             list[AdditionalFile]: The additional files associated with the table.
         """
         return get_additional_files(self.columns)
+
+    def get_tag(self) -> str:
+        """
+        Get the tag of the table component.
+
+        Returns:
+            str: The tag of the table component.
+        """
+        return "table"
+
+@dataclass
+class HorizontalTableComponent():
+    """
+    Represents a horizontal table component.
+
+    Attributes:
+        title (str): The title of the table.
+        component (HTMLComponent): The HTML component to be displayed in the table.
+    """
+    _ : KW_ONLY
+    title: str
+    component: HTMLComponent
+
+
+@attrs.define
+class HorizontalTable(HTMLComponent):
+    """
+    Represents an horizontal HTML table.
+
+    Attributes:
+        columns (list[TableColumn]): The columns of the table.
+
+        class_ (Optional[str]): The HTML class of the table for CSS.
+
+        width_percent (Optional[int]): The width of the table as a percentage
+        of page width.
+    """
+    components: list[HorizontalTableComponent] = attrs.field(
+        metadata={'description': 'List of Horizontal Table Components'},
+        validator=attrs.validators.deep_iterable(
+            member_validator=attrs.validators.instance_of(HorizontalTableComponent)),
+        kw_only=True)
+    class_ : Optional[str] = attrs.field(
+        default=None,
+        validator=attrs.validators.optional(attrs.validators.instance_of(str)),
+        metadata={'description': 'The class of the horizontal table'},
+        kw_only=True)
+
+    width_percent: Optional[int] = attrs.field(
+        default=80, # type: ignore
+        validator=[attrs.validators.optional(attrs.validators.instance_of(int)), # type: ignore
+                   attrs.validators.optional(attrs.validators.in_(range(1, 101)))], # type: ignore
+        metadata={'description': 'The width of the table as a percentage of page width'},
+        kw_only=True)
+
+    center: Optional[bool] = attrs.field(
+        default=True,
+        metadata={'description': 'Center the table'},
+        kw_only=True)
+
+    legend: Optional[str] = attrs.field(
+        default=None,
+        metadata={'description': 'The legend of the table'},
+        validator=attrs.validators.optional(attrs.validators.instance_of(str)),
+        kw_only=True)
+
+    @property
+    def body(self) -> HTMLBlock:
+        """
+        Generates the body of the table.
+
+        Returns:
+            HTMLBlock: The generated HTML block representing the table body.
+        """
+        body = HTMLBlock(
+            tag_name="tbody",
+        )
+
+        for component in self.components:
+            # manage title
+            title_cells = Cells(
+                data = Text(component.title, bold=True),
+                alignment="center",
+                width_percent=20
+            )
+
+            # manage component
+            component_cells = Cells(
+                data=component.component,
+                alignment="left",
+                width_percent=80
+            )
+
+            body.add_components(create_HTML_table_row(
+                row_elements=[title_cells, component_cells],
+                balise="td"
+            ))
+        return body
+
+    @property
+    def caption(self) -> HTMLBlock | None:
+        """
+        Generates the legend of the table.
+
+        Returns:
+            HTMLBlock: The generated HTML block representing the table legend.
+        """
+        return HTMLBlock(
+            tag_name="caption",
+            attributes={},
+            children=[Text(self.legend)]
+        ) if self.legend else None
+
+    def get_table(self) -> HTMLBlock:
+        """
+        Generates the table.
+
+        Returns:
+            HTMLBlock: The generated HTML block representing the table.
+        """
+
+        components = [self.body]
+
+        if self.caption:
+            components = [self.caption] + components
+
+
+        return HTMLBlock(
+            tag_name="table",
+            attributes=self.get_table_attributes(),
+            children=components # type: ignore
+        )
+
+    @property
+    def table_style(self) -> str:
+        """
+        Returns the style attribute for the table.
+
+        The style attribute is generated based on the properties of the table object.
+        It includes margin properties for centering the table and width property if
+        the width_percent property is set.
+
+        Returns:
+            str: The style attribute for the table.
+        """
+        #manage style
+        style_attribute = ""
+
+        if self.center:
+            style_attribute += "margin-left:auto;margin-right:auto;"
+
+        if self.width_percent:
+            style_attribute += f"width:{self.width_percent}%;"
+
+        return style_attribute
+
+    def get_table_attributes(self) -> dict[str, str]:
+        """
+        Returns the attributes for the table.
+
+        Returns:
+            dict[str, str]: The attributes for the table.
+        """
+        attributes = {}
+        if self.class_:
+            attributes["class"] = self.class_
+        if self.table_style:
+            attributes["style"] = self.table_style
+        return attributes
+
+    def render(self) -> str:
+        """
+        Renders the HTML representation of the table.
+
+        Returns:
+            str: The HTML representation of the table.
+        """
+        return self.get_table().render()
+
+    def get_additional_files(self) -> list[HTMLExtraFile]:
+        """
+        Gets the additional files associated with the table.
+
+        Returns:
+            list[AdditionalFile]: The additional files associated with the table.
+        """
+        return []
 
     def get_tag(self) -> str:
         """

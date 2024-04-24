@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 
 from yggdrasil.html.components.breakline import Breakline
 from yggdrasil.html.components.plot import Plot
+from yggdrasil.html.components.text import Text
+from yggdrasil.html.components.tables import HorizontalTable, HorizontalTableComponent
 
 from ..utils.string import LoremIpsum
 from ..utils.images import create_random_png
@@ -149,6 +151,27 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
     ax.set_title("Fake Plot")
     plot = Plot(figure_name="fake_plot", figure=fig, legend="This is a fake plot.")
     section3.add_components(plot)
+    
+    # create a horizontal table
+    h1 = HorizontalTableComponent(
+        title="info1",
+        component=Text(LoremIpsum.generate_sentence()),
+    )
+    h2 = HorizontalTableComponent(
+        title="info2",
+        component=Text(LoremIpsum.generate_sentence()),
+    )
+    h3 = HorizontalTableComponent(
+        title="info3",
+        component=Text(LoremIpsum.generate_sentence()),
+    )
+
+    ht = HorizontalTable(
+        components=[h1,h2,h3],
+        legend="This is a fake horizontal table."
+    )
+
+    section3.add_components(ht)
 
     md.add2body(section1,section2,section3)
 

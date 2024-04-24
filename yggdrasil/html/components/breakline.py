@@ -1,5 +1,6 @@
+""" Breakline component. """
 
-from .text import HTMLText
+from .text import Text,HTMLText
 
 __all__ = ["Breakline"]
 
@@ -10,4 +11,4 @@ def Breakline() -> HTMLText: # pylint: disable=invalid-name
     Returns:
         HTMLText: The created breakline component.
     """
-    return HTMLText(text="<br>")
+    return Text(text="<br>")

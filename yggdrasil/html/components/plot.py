@@ -17,13 +17,29 @@ IMAGE_HTML_TAG = 'img'
 
 @dataclass
 class AdditionalMatplotlibFigure(HTMLExtraFile):
+    """
+    A class representing an additional Matplotlib figure.
+
+    Attributes:
+        figure_name (str): The name of the figure.
+        figure (Figure): The Matplotlib figure object.
+        directory_name (Optional[str]): The name of the directory to save the figure in (optional).
+        dpi (int): The resolution of the saved figure in dots per inch (default is 100).
+    """
+
     _: KW_ONLY
-    figure_name : str
-    figure : Figure
+    figure_name: str
+    figure: Figure
     directory_name: Optional[str] = None
-    dpi : int = 100
+    dpi: int = 100
 
     def get_file_name(self) -> str:
+        """
+        Get the name of the file to save the figure as.
+
+        Returns:
+            str: The name of the file.
+        """
         # get the name of the file
         title = normalize_string(self.figure_name).replace(' ', '_')
 
@@ -33,7 +49,15 @@ class AdditionalMatplotlibFigure(HTMLExtraFile):
         return f"{title}.png"
 
     def export(self, output_dir: Path) -> None:
+        """
+        Export the figure to a file.
 
+        Args:
+            output_dir (Path): The directory to save the figure in.
+
+        Returns:
+            None
+        """
         # Create the target directory if it does not exist
         target_dir = output_dir / self.directory_name if self.directory_name else output_dir
         target_dir.mkdir(parents=True, exist_ok=True)
@@ -42,12 +66,18 @@ class AdditionalMatplotlibFigure(HTMLExtraFile):
         target_file = target_dir / self.get_file_name()
 
         # save the figure
-        self.figure.savefig(target_file,dpi=self.dpi,format='png')
+        self.figure.savefig(target_file, dpi=self.dpi, format='png')
 
     def get_status(self) -> str:
+        """
+        Get the status of the figure.
+
+        Returns:
+            str: The status of the figure.
+        """
         return "TO BE DONE"
 
-def Plot(
+def Plot(  # pylint: disable=invalid-name
     *,
     figure_name: str,
     figure: Figure,
@@ -55,7 +85,20 @@ def Plot(
     height: Optional[int]   = None,
     legend: Optional[str]   = None
     ) -> HTMLBlock:
+    """
+    Create a plot component.
 
+    Args:
+        figure_name (str): The name of the figure.
+        figure (Figure): The figure object to be displayed.
+        width (Optional[int]): The width of the plot component. Defaults to None.
+        height (Optional[int]): The height of the plot component. Defaults to None.
+        legend (Optional[str]): The legend to be displayed. Defaults to None.
+
+    Returns:
+        HTMLBlock: The plot component.
+
+    """
     # create the figure component
     fig = HTMLBlock(tag_name='figure')
 

@@ -1,3 +1,7 @@
+:root {
+    --primary-color: #003399; /* Define your color here */
+}
+
 * {
     /* Change your font family */
     font-family: sans-serif;
@@ -26,7 +30,7 @@ table {
 }
 
 table thead tr {
-    background-color: #009879;
+    background-color: var(--primary-color);
     color: #ffffff;
     text-align: left;
     font-weight: bold;
@@ -45,12 +49,16 @@ tbody tr:nth-of-type(even) {
 }
 
 tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+tbody tr:first-of-type {
+    border-top: 2px solid var(--primary-color);
 }
 
 tbody tr.active-row {
     font-weight: bold;
-    color: #009879;
+    color: var(--primary-color);
 }
 
 caption {

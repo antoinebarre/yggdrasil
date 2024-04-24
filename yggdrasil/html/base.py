@@ -56,7 +56,8 @@ class HTMLAdditionalFile(HTMLExtraFile):
         """
         Performs post-initialization tasks.
 
-        This method checks if the original file exists. If it doesn't, it raises a FileNotFoundError.
+        This method checks if the original file exists. If it doesn't,
+         it raises a FileNotFoundError.
 
         Raises:
             FileNotFoundError: If the original file does not exist.
@@ -83,15 +84,37 @@ class HTMLAdditionalFile(HTMLExtraFile):
 
 
 class HTMLComponent(ABC):
+    """
+    Base class for HTML components.
+
+    This class defines the interface for HTML components, which includes the `render`,
+     `get_additional_files`, and `get_tag` methods.
+    Subclasses of `HTMLComponent` should implement these methods to provide the
+     desired functionality.
+    """
 
     @abstractmethod
     def render(self) -> str:
-        pass
+        """
+        Renders the HTML representation of the object.
+
+        Returns:
+            A string containing the HTML representation.
+        """
 
     @abstractmethod
     def get_additional_files(self) -> list[HTMLExtraFile]:
-        pass
-    
+        """
+        Returns a list of additional HTML files that should be included in the output.
+
+        :return: A list of HTMLExtraFile objects representing the additional files.
+        """
+
     @abstractmethod
     def get_tag(self) -> str:
-        pass
+        """
+        Returns the tag associated with the HTML element.
+
+        :return: The tag of the HTML element.
+        :rtype: str
+        """
