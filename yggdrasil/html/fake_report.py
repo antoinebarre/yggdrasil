@@ -8,8 +8,6 @@ from .document import HTMLDocument
 from .components import (Title,h, default_css_stylesheet, Article,
                          Table,TableColumn,Image, UnorderedList, Hyperlink, OrderedList)
 
-
-
 def create_fake_report(html_file_path: Path) -> HTMLDocument:
     """
     Creates a fake report in HTML format.

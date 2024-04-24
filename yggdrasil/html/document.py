@@ -3,14 +3,13 @@
 
 
 from pathlib import Path
-from typing import Optional
 
 import attrs
 
 from ..utils.fileIO._handling import write_string_to_file
 from ..utils.string import remove_blank_lines
 
-from .base import HTMLExtraFile, HTMLComponent
+from .base import HTMLExtraFile
 from .components._blocks import HTMLBlock
 from .structure.header import Header
 from .structure.footer import Footer
@@ -30,6 +29,25 @@ ALLOWED_TAG_4_FOOTER = ["text"]
 
 @attrs.define
 class HTMLDocument:
+    """
+    Represents an HTML document.
+
+    Attributes:
+        header (HTMLBlock): The header of the HTML document.
+        body (HTMLBlock): The body of the HTML document.
+        footer (HTMLBlock): The footer of the HTML document.
+
+    Methods:
+        __attrs_post_init__(): Initializes the header, body, and footer of the HTML document.
+        add2header(*components): Adds the specified components to the header of the document.
+        add2body(*components): Adds the specified components to the body of the document.
+        add2footer(*components): Adds the specified components to the footer of the document.
+        get_html(): Returns the HTML content of the document as a string.
+        get_all_additional_files(): Returns a list of all additional files associated
+         with the document.
+        publish(html_file_path, exist_ok): Publishes the HTML content to the specified file path.
+    """
+
     header : HTMLBlock = attrs.field(
         metadata={'description': 'The header of the HTML document'},
         validator=attrs.validators.optional(
@@ -160,16 +178,3 @@ class HTMLDocument:
 
         for extra_file in self.get_all_additional_files():
             extra_file.export(html_file_path.parent)
-
-    # def publish(self, htlm_file_path: Path, exist_ok: bool = False):
-    #     """
-    #     Publishes the HTML content to the specified file path.
-
-    #     Args:
-    #         htlm_file_path (Path): The file path where the HTML content will be published.
-    #         exist_ok (bool, optional): If True, allows overwriting an existing file. Defaults to False.
-
-    #     Raises:
-    #         FileExistsError: If the file already exists at the specified file path.
-    #     """
-    #     return ""
