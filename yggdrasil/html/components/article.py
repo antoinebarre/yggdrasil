@@ -4,15 +4,13 @@ from dataclasses import dataclass, field
 from typing import Optional
 import warnings
 
-
 from ._blocks import _create_string_block
 from ..base import HTMLComponent, HTMLExtraFile
 from .__childrenUtils import get_children
-from .paragraph import Paragraph
 from .heading import h
 
-
 # TODO : change to attrs and add validators
+
 
 @dataclass
 class Article(HTMLComponent):
@@ -112,17 +110,17 @@ class Article(HTMLComponent):
 
         self._content += components
 
-    def add_paragraph(self, *text: str) -> None:
-        """
-        Add a paragraph to the article.
+    # def add_paragraph(self, *text: str) -> None:
+    #     """
+    #     Add a text paragraph to the article.
 
-        Args:
-            *text (str): The text to be added to the paragraph.
+    #     Args:
+    #         *text (str): The text to be added to the paragraph.
 
-        Returns:
-            None
-        """
-        self._content.append(Paragraph(*text))
+    #     Returns:
+    #         None
+    #     """
+    #     self._content.append(Paragraph(*text))
 
     def render(self) -> str:
         """
@@ -149,8 +147,6 @@ class Article(HTMLComponent):
             content = content_str,
             inline=False
         )
-        
-    
 
     def get_tag(self) -> str:
         """

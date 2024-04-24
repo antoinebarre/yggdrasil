@@ -42,19 +42,18 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
     intro = Article(
         title="Introduction")
 
-    intro.add_paragraph(
-        "This is a fake report created with YGGDRASIL.")
+    intro.add_components("This is a fake report created with YGGDRASIL.")
 
     md.add2body(intro)
 
     # create sections
     section1 = Article(
         title="Section 1")
-    section1.add_paragraph(LoremIpsum.generate_paragraph())
+    section1.add_components(LoremIpsum.generate_paragraph())
 
     section11 = Article(
         title="Section 1.1")
-    section11.add_paragraph(LoremIpsum.generate_paragraph())
+    section11.add_components(LoremIpsum.generate_paragraph())
 
     # create a table
     tt = Table(
@@ -79,7 +78,7 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
 
     section12 = Article(
         title="Section 1.2")
-    section12.add_paragraph(LoremIpsum.generate_paragraph())
+    section12.add_components(LoremIpsum.generate_paragraph())
 
     # create a fake image png
     image_path = create_random_png(temp_dir_path / "fake_image.png")
@@ -98,11 +97,11 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
 
     section2 = Article(
         title="Section 2")
-    section2.add_paragraph(LoremIpsum.generate_paragraph())
+    section2.add_components(LoremIpsum.generate_paragraph())
 
     section21 = Article(
         title="Section 2.1")
-    section21.add_paragraph(LoremIpsum.generate_paragraph())
+    section21.add_components(LoremIpsum.generate_paragraph())
 
     l = UnorderedList(
     "Hello, World!",
@@ -127,7 +126,7 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
 
     section22 = Article(
         title="Section 2.2")
-    section22.add_paragraph(LoremIpsum.generate_paragraph())
+    section22.add_components(LoremIpsum.generate_paragraph())
     section22.add_components(Hyperlink(component="GO TO GOOGLE",link="https://www.google.com"))
 
     section2.add_components(section22)

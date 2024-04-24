@@ -8,6 +8,8 @@ from typing import Optional
 import attrs
 
 from ..utils.fileIO._handling import write_string_to_file
+from ..utils.string import remove_blank_lines
+
 from .base import HTMLExtraFile, HTMLComponent
 from .components._blocks import HTMLBlock
 from .structure.header import Header
@@ -106,7 +108,14 @@ class HTMLDocument:
         body = self.body.render()
         footer = self.footer.render()
 
-        return "\n".join([header,body,footer])
+        # Combine the header, body, and footer
+        html_text = f"{header}\n{body}\n{footer}"
+
+        # clean up the HTML content
+        html_text = html_text.strip()
+        html_text = remove_blank_lines(html_text)
+
+        return html_text
 
     def get_all_additional_files(self) -> list[HTMLExtraFile]:
         """
@@ -132,13 +141,15 @@ class HTMLDocument:
 
         Args:
             htlm_file_path (Path): The file path where the HTML content will be published.
-            exist_ok (bool, optional): If True, allows overwriting an existing file. Defaults to False.
+            exist_ok (bool, optional): If True, allows overwriting an existing file.
+             Defaults to False.
 
         Raises:
             FileExistsError: If the file already exists at the specified file path.
         """
         if not exist_ok and html_file_path.exists():
-            raise FileExistsError(f"The file already exists at the specified file path: {html_file_path}")
+            raise FileExistsError(
+                f"The file already exists at the specified file path: {html_file_path}")
 
         # Write the HTML content to the file
         _ = write_string_to_file(
