@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional
 from beartype import beartype
 
-from yggdrasil.validation.fileIO import validate_file_extension
+from yggdrasil.validation.files import validate_file_extension
 from ._blocks import InlineHTMLComponent, HTMLBlock
 from ..base import HTMLAdditionalFile
 

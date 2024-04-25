@@ -6,13 +6,14 @@ from typing import Optional
 from abc import ABC, abstractmethod
 import attrs
 
-from ..utils.fileIO._handling import copy_file
+from ..utils.files import copy_file
+
 
 
 class HTMLExtraFile(ABC):
     """ Base class for additional files to be included in the output directory."""
     @abstractmethod
-    def export(self, output_dir: Path):
+    def export(self, output_dir: Path) -> Path:
         """export method to be implemented by the subclass"""
 
     @abstractmethod
@@ -66,7 +67,16 @@ class HTMLAdditionalFile(HTMLExtraFile):
         if not self.original_file.exists():
             raise FileNotFoundError(f"The file {self.original_file} does not exist.")
 
-    def export(self, output_dir: Path) -> None:
+    def export(self, output_dir: Path) -> Path:
+        """
+        Export the file to the specified output directory.
+
+        Args:
+            output_dir (Path): The directory where the file should be exported.
+
+        Returns:
+            Path: The path to the exported file.
+        """
 
         # Create the target directory if it does not exist
         target_dir = output_dir / self.directory_name if self.directory_name else output_dir
@@ -75,13 +85,14 @@ class HTMLAdditionalFile(HTMLExtraFile):
         # Copy the file
         target_file = target_dir / self.filename
 
-        copy_file(
-            source_path=self.original_file,
-            destination_path=target_file)
+        return copy_file(
+                    source_path=self.original_file,
+                    destination_path=target_file)
 
     def get_status(self) -> str:
-        return f"File {self.original_file} has been copied to {self.directory_name}/{self.filename}."
-
+        return (f"File {self.original_file} has been copied to"
+                f" {self.directory_name}/{self.filename}."
+                )
 
 class HTMLComponent(ABC):
     """

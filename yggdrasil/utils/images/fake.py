@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image
 import numpy as np
 
-from yggdrasil.validation.fileIO import validate_file_extension
+from yggdrasil.validation.files import validate_file_extension
 
 __all__ = ["create_random_png"]
 

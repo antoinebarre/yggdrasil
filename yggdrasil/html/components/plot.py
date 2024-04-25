@@ -48,7 +48,7 @@ class AdditionalMatplotlibFigure(HTMLExtraFile):
 
         return f"{title}.png"
 
-    def export(self, output_dir: Path) -> None:
+    def export(self, output_dir: Path) -> Path:
         """
         Export the figure to a file.
 
@@ -56,7 +56,7 @@ class AdditionalMatplotlibFigure(HTMLExtraFile):
             output_dir (Path): The directory to save the figure in.
 
         Returns:
-            None
+            Path: The path to the saved figure.
         """
         # Create the target directory if it does not exist
         target_dir = output_dir / self.directory_name if self.directory_name else output_dir
@@ -67,6 +67,8 @@ class AdditionalMatplotlibFigure(HTMLExtraFile):
 
         # save the figure
         self.figure.savefig(target_file, dpi=self.dpi, format='png')
+
+        return target_file
 
     def get_status(self) -> str:
         """

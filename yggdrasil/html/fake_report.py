@@ -7,6 +7,7 @@ from yggdrasil.html.components.breakline import Breakline
 from yggdrasil.html.components.plot import Plot
 from yggdrasil.html.components.text import Text
 from yggdrasil.html.components.tables import HorizontalTable, HorizontalTableComponent
+from yggdrasil.utils.files.checksum import SafeFile
 
 from ..utils.string import LoremIpsum
 from ..utils.images import create_random_png
@@ -134,16 +135,16 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
     section22.add_components(Hyperlink(component="GO TO GOOGLE",link="https://www.google.com"))
 
     section2.add_components(section22)
-    
+
     section3 = Article(
         title="Section 3 with Plot")
-    
+
     section3.add_components(LoremIpsum.generate_paragraph())
     section3.add_components(Breakline())
     section3.add_components(Hyperlink(component="GO TO GOOGLE",link="https://www.google.com"))
-    
+
     # create a fake plot
-    
+
     fig, ax = plt.subplots()
     ax.plot([1,2,3,4],[1,4,9,16])
     ax.set_xlabel("X")
@@ -151,7 +152,7 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
     ax.set_title("Fake Plot")
     plot = Plot(figure_name="fake_plot", figure=fig, legend="This is a fake plot.")
     section3.add_components(plot)
-    
+
     # create a horizontal table
     h1 = HorizontalTableComponent(
         title="info1",
@@ -176,7 +177,14 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
     md.add2body(section1,section2,section3)
 
     # publish the fake report
-    md.publish(html_file_path)
+    a = md.publish(html_file_path)
+
+    print(a)
+
+
+    chk = SafeFile.from_list(a)
+
+    print(chk)
 
     # close the temporary directory
     temp_dir.cleanup()

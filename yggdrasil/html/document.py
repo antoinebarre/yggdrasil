@@ -6,7 +6,7 @@ from pathlib import Path
 
 import attrs
 
-from ..utils.fileIO._handling import write_string_to_file
+from ..utils.files import write_string_to_file
 from ..utils.string import remove_blank_lines
 
 from .base import HTMLExtraFile
@@ -153,7 +153,7 @@ class HTMLDocument:
         self,
         html_file_path: Path,
         exist_ok: bool = False
-    ) -> None:
+    ) -> list[Path]:
         """
         Publishes the HTML content to the specified file path.
 
@@ -168,13 +168,18 @@ class HTMLDocument:
         if not exist_ok and html_file_path.exists():
             raise FileExistsError(
                 f"The file already exists at the specified file path: {html_file_path}")
+        # initiate the list of exported files with the HTML file
+        exported_files: list[Path] = [
+            write_string_to_file(
+                file_path=html_file_path,
+                content=self.get_html(),
+                exist_ok=exist_ok,
+            )
+        ]
 
-        # Write the HTML content to the file
-        _ = write_string_to_file(
-            file_path=html_file_path,
-            content=self.get_html(),
-            exist_ok=exist_ok
+        exported_files.extend(
+            extra_file.export(html_file_path.parent)
+            for extra_file in self.get_all_additional_files()
         )
 
-        for extra_file in self.get_all_additional_files():
-            extra_file.export(html_file_path.parent)
+        return exported_files

@@ -1,7 +1,7 @@
 from pathlib import Path
 from yggdrasil.html.fake_report import create_fake_report
 
-from yggdrasil.utils.fileIO import delete_folder
+from yggdrasil.utils.files import delete_folder
 
 
 target_dir = Path("work/temp")
