@@ -64,9 +64,9 @@ class InlineHTMLComponent(HTMLComponent):
         kw_only=True)
 
     additional_file:HTMLExtraFile = attrs.field(
-        factory=None,
-        metadata={'description': 'additional file to be published'},
-        validator=attrs.validators.instance_of(HTMLExtraFile),
+        default=None,
+        metadata={'description': 'List of additional files to be published'},
+        validator=attrs.validators.optional(attrs.validators.instance_of(HTMLExtraFile)),
         kw_only=True)
 
     attributes: dict[str, str] = attrs.field(
@@ -115,15 +115,25 @@ class InlineHTMLComponent(HTMLComponent):
         Returns:
             list[HTMLExtraFile]: List of additional files.
         """
-        return [self.additional_file]
+        return [self.additional_file] if self.additional_file else []
 
     def get_tag(self) -> str:
         """
         Returns the tag name of the HTML component.
 
-        :return: The tag name as a string.
+        Returns:
+            str: The tag name as a string.
         """
         return self.tag_name
+    
+    def get_id(self) -> str:
+        """
+        Returns the value of the 'id' attribute of the component.
+
+        Returns:
+            str: The value of the 'id' attribute.
+        """
+        return self.attributes.get('id', '')
 
 
 @attrs.define
@@ -241,13 +251,29 @@ class HTMLBlock(HTMLComponent):
             inline=False
         )
 
-    def get_extra_files_info(self)-> str:
+    def get_extra_files_info(self) -> str:
+        """
+        Returns a string containing the status of each additional file.
+
+        Returns:
+            str: A string containing the status of each additional file.
+        """
         return '\n'.join([file.get_status() for file in self.get_additional_files()])
 
     def get_tag(self) -> str:
         """
-        Returns the tag name of the HTML component.
+        Returns the tag name associated with the HTML component.
 
-        :return: The tag name as a string.
+        Returns:
+            str: The tag name of the HTML component.
         """
         return self.tag_name
+
+    def get_id(self) -> str:
+        """
+        Returns the value of the 'id' attribute of the component.
+
+        Returns:
+            str: The value of the 'id' attribute.
+        """
+        return self.attributes.get('id', '')

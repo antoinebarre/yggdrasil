@@ -129,3 +129,9 @@ class HTMLComponent(ABC):
         :return: The tag of the HTML element.
         :rtype: str
         """
+
+    @abstractmethod
+    def get_id(self) -> str:
+        """
+        Returns the id of the HTML element if it has one, otherwise returns an empty string.
+        """

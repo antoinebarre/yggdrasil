@@ -7,6 +7,7 @@ from yggdrasil.html.components.breakline import Breakline
 from yggdrasil.html.components.plot import Plot
 from yggdrasil.html.components.text import Text
 from yggdrasil.html.components.tables import HorizontalTable, HorizontalTableComponent
+from yggdrasil.html.components.toc import collect_toc_elements, create_toc, hamburger_css_stylesheet
 from yggdrasil.utils.files.checksum import SafeFile
 
 from ..utils.string import LoremIpsum
@@ -176,6 +177,26 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
 
     md.add2body(section1,section2,section3)
 
+    print("###########################")
+
+    list_article = collect_toc_elements(md.body.children,["article"])
+    print(len(list_article))
+
+    for article in list_article:
+        print(article.title)
+        print(article.get_level())
+        print(article.get_id())
+
+
+    # add the table of contents div
+    md.add2body(create_toc(md.body.children))
+
+    # add the header
+    md.add2header(hamburger_css_stylesheet()
+    )
+
+
+    print("###########################")
     # publish the fake report
     a = md.publish(html_file_path)
 

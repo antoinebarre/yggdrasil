@@ -10,7 +10,7 @@ from .__attributesUtils import validate_attributes
 __all__ = ["UnorderedList", "OrderedList"]
 
 ALLOWED_ATTRIBUTES_UNORDERED = ['class']
-ALLOWED_TAG_UNORDERED = ["text","span",'a']
+ALLOWED_TAG_UNORDERED = ["text","span",'a',"ul"]
 
 
 # TODO : allow nested unordered list

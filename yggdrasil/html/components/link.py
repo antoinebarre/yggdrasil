@@ -13,7 +13,7 @@ __all__ = ['CSSStyleSheet', 'default_css_stylesheet']
 
 STYLE_DIRECTORY= 'styles'
 
-def CSSStyleSheet(
+def CSSStyleSheet(  # pylint: disable=invalid-name
     filepath: Path
     ) -> InlineHTMLComponent:
     """

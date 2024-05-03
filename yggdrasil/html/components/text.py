@@ -70,6 +70,12 @@ class HTMLText(HTMLComponent):
             str: The tag of the text component.
         """
         return "text"
+    
+    def get_id(self) -> str:
+        """
+        Returns the ID of the text component, i.e., an empty string.
+        """
+        return ""
 
 def Text(text: str, bold: bool = False) -> HTMLText: # pylint: disable=invalid-name
     """

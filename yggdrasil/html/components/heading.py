@@ -17,6 +17,7 @@ def h(
     level: int,
     title: str,
     attributes: Optional[dict[str, str]] = None,
+    id_: str = generate_unique_id(),
     ) -> HTMLBlock:
     """
     Create an HTML heading element.
@@ -42,7 +43,8 @@ def h(
     final_attributes = validate_html_attribute(attributes, ALLOWED_ATTRIBUTES)
 
     # add unique id to the heading element
-    final_attributes["id"] = f"h{level}_{title.lower().replace(' ', '_')}_{generate_unique_id()}"
+    if id_:
+        final_attributes["id"] = id_
 
     return HTMLBlock(  #pylint: disable=unexpected-keyword-arg
         tag_name=f"h{level}",

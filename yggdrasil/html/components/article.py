@@ -4,6 +4,9 @@ from dataclasses import dataclass, field
 from typing import Optional
 import warnings
 
+from ...utils.string.unique_id import UUID4, UniqueID, NoUniqueID
+
+from ...utils.string import generate_unique_id
 from ._blocks import _create_string_block
 from ..base import HTMLComponent, HTMLExtraFile
 from .__childrenUtils import get_children
@@ -11,11 +14,16 @@ from .heading import h
 
 # TODO : change to attrs and add validators
 
+# TODO : limit the nature of the components that can be added to the article
 
 @dataclass
 class Article(HTMLComponent):
     """
-    Represents an HTML article component.
+    Represents an HTML article component with title and content.
+
+    Articles are used to structure the content of an HTML document. an article can contain
+    other articles, tables, images, lists, and other HTML components. The title of the article
+    is rendered as a heading with a level that depends on the level of the article in the structure.
 
     Attributes:
         title (str): The title of the article.
@@ -38,6 +46,12 @@ class Article(HTMLComponent):
     _content: list[HTMLComponent] = field(default_factory=list, init=False)
     _level: int = field(init=False, default=2)
     class_: Optional[str] = field(default=None, init=True)
+    id_method:UniqueID = UUID4()
+    id_: str = field(init=False)
+
+    def __post_init__(self):
+        """Initialize the article."""
+        self.id_ = self.id_method.generate_unique_id()
 
     def set_level(self, level: int) -> None:
         """
@@ -73,7 +87,7 @@ class Article(HTMLComponent):
         Returns:
             str: The title of the article.
         """
-        return h(level=self._level, title=self.title).render()
+        return h(level=self._level, title=self.title,id_=self.id_).render()
 
     def get_additional_files(self) -> list[HTMLExtraFile]:
         """
@@ -110,18 +124,6 @@ class Article(HTMLComponent):
 
         self._content += components
 
-    # def add_paragraph(self, *text: str) -> None:
-    #     """
-    #     Add a text paragraph to the article.
-
-    #     Args:
-    #         *text (str): The text to be added to the paragraph.
-
-    #     Returns:
-    #         None
-    #     """
-    #     self._content.append(Paragraph(*text))
-
     def render(self) -> str:
         """
         Render the structure component as an HTML article.
@@ -156,3 +158,34 @@ class Article(HTMLComponent):
             str: The tag of the structure component.
         """
         return "article"
+
+    def get_id(self) -> str:
+        """
+        Returns the ID of the article.
+
+        Returns:
+            str: The ID of the article.
+        """
+        return self.id_
+
+    def get_content(self) -> list[HTMLComponent]:
+        """
+        Returns the content of the article.
+
+        Returns:
+            list[HTMLComponent]: The content of the article.
+        """
+        return self._content
+
+    def get_level(self) -> int:
+        """
+        Returns the level of the article.
+
+        Returns:
+            int: The level of the article.
+        """
+
+        # update the level of the children
+        self.__set_children_level()
+
+        return self._level

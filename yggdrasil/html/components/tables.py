@@ -388,6 +388,15 @@ class Table(HTMLComponent):
         """
         return "table"
 
+    def get_id(self) -> str:
+        """
+        Get the ID of the table, i.e., an empty string.
+
+        Returns:
+            str: The ID of the table.
+        """
+        return ""
+
 @dataclass
 class HorizontalTableComponent():
     """
@@ -574,3 +583,12 @@ class HorizontalTable(HTMLComponent):
             str: The tag of the table component.
         """
         return "table"
+
+    def get_id(self) -> str:
+        """
+        Get the ID of the horizontal table, i.e., an empty string.
+
+        Returns:
+            str: The ID of the table.
+        """
+        return ""
