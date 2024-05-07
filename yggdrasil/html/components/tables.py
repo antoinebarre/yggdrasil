@@ -12,7 +12,7 @@ import attrs
 from ..base import  HTMLComponent, HTMLExtraFile
 from .__extrafiles import collect_additional_files
 from .text import Text
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from .__childrenUtils import get_children
 
 __all__=[

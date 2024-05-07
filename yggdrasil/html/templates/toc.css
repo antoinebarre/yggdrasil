@@ -1,4 +1,48 @@
-#menu_toggle {
+
+
+nav {
+  position: relative;
+}
+
+.menu-toggle {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+.hamburger {
+  display: block;
+  background-color: #333;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.menu {
+  display: none;
+  background-color: #333;
+  width: 100%;
+}
+
+.menu a {
+  display: block;
+  color: white;
+  padding: 10px;
+  text-decoration: none;
+}
+
+/* Toggle Show/Hide */
+#menu-toggle:checked + .hamburger + .menu {
+  display: block;
+}
+
+/* Optional: Add a transition effect */
+.menu a:hover {
+  background-color: #555;
+}
+
+
+/* #menu_toggle {
     opacity: 0;
   }
   #menu_toggle:checked + .menu_btn > span {
@@ -56,6 +100,8 @@
     box-shadow: 2px 2px 6px rgba(0, 0, 0, .4);
     transition-duration: .25s;
   }
+  */
+
   .toc_item1 {
     display: block;
     padding: 12px 24px;

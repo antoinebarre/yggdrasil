@@ -6,7 +6,7 @@ from typing import Optional
 from matplotlib.figure import Figure
 
 from ..base import HTMLExtraFile
-from ._blocks import HTMLBlock, InlineHTMLComponent
+from .blocks import HTMLBlock, InlineHTMLComponent
 from ...utils.string import normalize_string
 
 __all__ = ['Plot']

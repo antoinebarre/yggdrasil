@@ -3,7 +3,7 @@
 from typing import Literal, Optional
 
 from ..base import HTMLComponent
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from .__childrenUtils import get_children, validate_children,validate_tag
 from .__attributesUtils import validate_attributes
 

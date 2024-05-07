@@ -3,7 +3,7 @@
 from typing import Optional
 
 from .text import Text
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from .__validate_attributes import validate_html_attribute
 from ...utils.string import generate_unique_id
 

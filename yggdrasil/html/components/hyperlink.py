@@ -1,12 +1,12 @@
 """Function to create a link component."""
 
 from typing import Literal, Optional
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from .__childrenUtils import get_children
 from ..base import HTMLComponent
 
 
-ALLOWED_ATTRIBUTES = ['class']
+ALLOWED_ATTRIBUTES = ['class','onclick',]
 
 # TODO: improve the check for the allowed components
 

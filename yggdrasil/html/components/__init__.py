@@ -1,6 +1,6 @@
 """Collection of HTML components."""
 
-
+from .blocks import *
 from .image import *
 from .paragraph import *
 from .hyperlink import *

@@ -1,6 +1,6 @@
 """ Class for the body of an HTML report."""
 
-from ..components._blocks import HTMLBlock
+from ..components.blocks import HTMLBlock
 from ..base import HTMLComponent
 
 __all__ = ["Body"]

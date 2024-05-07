@@ -1,7 +1,7 @@
 """ Generic HTML tag Object """
 
 from typing import Optional
-from yggdrasil.html.components._blocks import InlineHTMLComponent, HTMLBlock
+from yggdrasil.html.components.blocks import InlineHTMLComponent, HTMLBlock
 from yggdrasil.html.base import HTMLComponent, HTMLExtraFile
 
 

@@ -7,7 +7,7 @@ import warnings
 from ...utils.string.unique_id import UUID4, UniqueID, NoUniqueID
 
 from ...utils.string import generate_unique_id
-from ._blocks import _create_string_block
+from .blocks import _create_string_block
 from ..base import HTMLComponent, HTMLExtraFile
 from .__childrenUtils import get_children
 from .heading import h

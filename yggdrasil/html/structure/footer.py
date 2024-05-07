@@ -2,7 +2,7 @@
 
 import attrs
 from ..base import HTMLComponent, HTMLExtraFile
-from ..components._blocks import HTMLBlock
+from ..components.blocks import HTMLBlock
 
 __all__ = ["Footer"]
 

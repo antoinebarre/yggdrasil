@@ -1,7 +1,7 @@
 """collection of paragraph components"""
 
 from typing import Optional
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from ..base import HTMLComponent
 from .__childrenUtils import get_children
 

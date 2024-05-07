@@ -10,7 +10,7 @@ from ..utils.files import write_string_to_file
 from ..utils.string import remove_blank_lines
 
 from .base import HTMLExtraFile
-from .components._blocks import HTMLBlock
+from .components.blocks import HTMLBlock
 from .structure.header import Header
 from .structure.footer import Footer
 from .structure.body import Body
@@ -23,9 +23,9 @@ __all__ = [
 ALLOWED_HTML_EXTENSIONS = ['.html', '.htm']
 
 # Contents of document
-ALLOWED_TAG_4_HEADER = ["text","link","style","script","meta","title","h1"]
+ALLOWED_TAG_4_HEADER = ["text","link","style","script","meta","title","h1","div","nav","style",'script']
 ALLOWED_TAG_4_BODY = None
-ALLOWED_TAG_4_FOOTER = ["text"]
+ALLOWED_TAG_4_FOOTER = ["text","script"]
 
 @attrs.define
 class HTMLDocument:

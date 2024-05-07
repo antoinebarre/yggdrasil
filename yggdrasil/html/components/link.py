@@ -6,12 +6,21 @@ from pathlib import Path
 
 from ...validation.files import validate_file_extension
 from ..base import HTMLAdditionalFile
-from ._blocks import InlineHTMLComponent
+from .blocks import InlineHTMLComponent, HTMLBlock
+from .text import Text
 
 
 __all__ = ['CSSStyleSheet', 'default_css_stylesheet']
 
 STYLE_DIRECTORY= 'styles'
+
+# def Link(  # pylint: disable=invalid-name
+#     source_code: str
+#     ) -> HTMLBlock:
+#     return HTMLBlock(
+#         tag_name='link',
+#         children=[Text(source_code)]
+#     )
 
 def CSSStyleSheet(  # pylint: disable=invalid-name
     filepath: Path

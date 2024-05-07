@@ -5,6 +5,7 @@ from typing import List
 import importlib.resources as pkg_resources
 
 from yggdrasil.html import Article, HTMLBlock, Division, Hyperlink
+from yggdrasil.html.components.nav import Navigation
 from ..base import HTMLComponent
 from .generic_html_tag import Generic_block_HTML, Generic_inline_HTML
 from .span import Span
@@ -63,8 +64,7 @@ def create_toc(
     Returns:
         HTMLBlock: The table of contents.
     """
-    toc = Division(
-        attributes={"class": "hamburger-menu"}
+    toc = Navigation(
     )
 
     # add buttan and label
@@ -73,25 +73,31 @@ def create_toc(
             tag_name="input",
             attributes={
                 "type": "checkbox",
-                "id": "menu_toggle",
-                "class": "menu_toggle"
+                "id": "menu-toggle",
+                "class": "menu-toggle",
             }
         ),
         Generic_block_HTML(
             tag_name="label",
             attributes={
-                "class": "menu_btn",
-                "for": "menu_toggle"
+                "class": "hamburger",
+                "for": "menu-toggle"
             },
             content=[
                 Span(
-                    text="",
+                    text="&#9776;",
                 )
             ]
         ))
-    # add the list
+    # create a list of links
+    list_of_links = Division(
+        attributes={"class": "menu"}
+    )
     for element in collect_toc_elements(body_elements, ["article"]):
-        toc.add_components(create_link4toc(element))
+        list_of_links.add_components(create_link4toc(element))
+
+    # add the list of links to the toc
+    toc.add_components(list_of_links)
 
     return toc
 

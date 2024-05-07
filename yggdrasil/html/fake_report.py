@@ -7,7 +7,7 @@ from yggdrasil.html.components.breakline import Breakline
 from yggdrasil.html.components.plot import Plot
 from yggdrasil.html.components.text import Text
 from yggdrasil.html.components.tables import HorizontalTable, HorizontalTableComponent
-from yggdrasil.html.components.toc import collect_toc_elements, create_toc, hamburger_css_stylesheet
+from yggdrasil.html.components.toc2 import collect_toc_elements, create_toc, toc_button, toc_script, toc_style
 from yggdrasil.utils.files.checksum import SafeFile
 
 from ..utils.string import LoremIpsum
@@ -189,11 +189,15 @@ def create_fake_report(html_file_path: Path) -> HTMLDocument:
 
 
     # add the table of contents div
-    md.add2body(create_toc(md.body.children))
+    md.add2header(create_toc(md.body.children))
 
     # add the header
-    md.add2header(hamburger_css_stylesheet()
-    )
+    md.add2header(toc_style())
+    # create the footer
+    md.add2header(toc_script())
+    
+    md.add2body(toc_button())
+
 
 
     print("###########################")

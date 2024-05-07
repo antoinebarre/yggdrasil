@@ -2,7 +2,7 @@
 
 from typing import Optional
 import attrs
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from .text import Text
 from .__validate_attributes import validate_html_attribute
 

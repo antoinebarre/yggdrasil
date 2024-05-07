@@ -1,7 +1,7 @@
 
 
 from yggdrasil.html.base import HTMLComponent
-from ._blocks import HTMLBlock
+from .blocks import HTMLBlock
 from .text import Text
 
 __all__ = ["Title"]
