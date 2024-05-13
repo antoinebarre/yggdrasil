@@ -93,7 +93,7 @@ class SafeFile:
             f"SafeFile: {self.file_path}"
             f" with checksum {self.checksum}"
             f" (method: {self.checksum_method.__name__})")
-        
+
     @classmethod
     def from_list(cls, file_list: list[Path]) -> list['SafeFile']:
         """

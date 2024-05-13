@@ -23,7 +23,9 @@ __all__ = [
 ALLOWED_HTML_EXTENSIONS = ['.html', '.htm']
 
 # Contents of document
-ALLOWED_TAG_4_HEADER = ["text","link","style","script","meta","title","h1","div","nav","style",'script']
+ALLOWED_TAG_4_HEADER = [
+    "text","link","style","script","meta",
+    "title","h1","div","nav","style",'script']
 ALLOWED_TAG_4_BODY = None
 ALLOWED_TAG_4_FOOTER = ["text","script"]
 
