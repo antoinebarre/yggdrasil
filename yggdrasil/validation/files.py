@@ -74,4 +74,5 @@ def validate_existing_file(file_path: Path) -> Path:
     if file_path.is_file():
         return file_path
     raise FileNotFoundError(f"The file {file_path} does not exist.")
+
 # Path: yggdrasil/utils/files/__init__.py
