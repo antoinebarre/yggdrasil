@@ -1,5 +1,6 @@
 
-from yggdrasil.utils.string import normalize_string
+from yggdrasil.geography.position import Position
 
-print(normalize_string("Hello, World!") == "hello, world!")
-print(normalize_string("Héllo, Wòrld!") == "hello, world!")
+pos = Position(1.,2.,3.)
+print(pos)
+pos.x = 4
