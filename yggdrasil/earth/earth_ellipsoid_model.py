@@ -1,9 +1,10 @@
 """Earth Ellipsoid Model."""
 
 import math
+from typing import Literal
 import attrs
 
-__all__ = ['EllipsoidModel', 'wgs84', 'spherical_earth']
+__all__ = ['EllipsoidModel', 'earth_ellipsoid_model',"DEFAULT_EARTH_ELLIPSOID_MODEL"]
 
 @attrs.define(slots=True)
 class EllipsoidModel():
@@ -137,3 +138,47 @@ def spherical_earth() -> EllipsoidModel:
         j2=0.0,
         earth_rotation_rate=7.292115e-5
     )
+
+AVAILABLE_ELLIPSOIDS = {
+    "WGS84": EllipsoidModel(
+        name="WGS84",
+        semi_major_axis=6378137.0,
+        flattening=1/298.257223563,
+        j2=1.08263e-3,
+        earth_rotation_rate=7.292115e-5
+    ),
+    "Spherical Earth": EllipsoidModel(
+        name="Spherical Earth",
+        semi_major_axis=6371127.0,
+        flattening=0.0,
+        j2=0.0,
+        earth_rotation_rate=7.292115e-5
+    )
+}
+
+DEFAULT_EARTH_ELLIPSOID_MODEL = "WGS84"
+
+def earth_ellipsoid_model(
+    name: Literal["WGS84", "Spherical Earth"] = DEFAULT_EARTH_ELLIPSOID_MODEL
+    ) -> EllipsoidModel:
+    """
+    Returns the ellipsoid model for the Earth.
+
+    Parameters:
+        name (Literal["WGS84", "Spherical Earth"], optional): The name of the ellipsoid model.
+            Defaults to "WGS84".
+
+    Returns:
+        EllipsoidModel: The ellipsoid model for the Earth.
+
+    Raises:
+        KeyError: If the specified ellipsoid model name is not available.
+
+    """
+    try:
+        return AVAILABLE_ELLIPSOIDS[name]
+    except KeyError as e:
+        available_keys = ", ".join(AVAILABLE_ELLIPSOIDS.keys())
+        raise KeyError(
+            f"'{name}' is not a valid ellipsoid model name."
+            f" Available names are: ({available_keys})") from e

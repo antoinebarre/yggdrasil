@@ -1,14 +1,18 @@
 """Collection of types used in Yggdrasil."""
 
-from typing import Annotated, Union
+from typing import Annotated, Literal, TypeVar, Union
 from beartype.vale import Is
 import numpy as np
+import numpy.typing as npt
 
 FloatNumber = Union[float, np.float64]
-
 FloatInt = Union[int, np.int64]
-
 FloatVector = Union[np.ndarray, list]
+
+DType = TypeVar("DType", bound=np.generic)
+
+Array3 = Annotated[npt.NDArray[DType], Literal[3]]
+Array3x3 = Annotated[npt.NDArray[DType], Literal[3, 3]]
 
 
 # Float64Array3 = Annotated[

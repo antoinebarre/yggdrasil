@@ -3,7 +3,7 @@
 from pathlib import Path
 import shutil
 
-from ...validation.files import validate_path
+from ..argument_validation.files import validate_path
 
 __all__ = ["copy_file", "delete_folder", "write_string_to_file"]
 

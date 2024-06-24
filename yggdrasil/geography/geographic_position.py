@@ -1,9 +1,8 @@
-
+"""GeographicPosition class definition."""
 import math
 import attrs
 
-from ..earth import EllipsoidModel,wgs84
-from .position import Position
+from ..earth import EllipsoidModel
 
 @attrs.define(slots=True)
 class GeographicPosition:
@@ -41,7 +40,7 @@ class GeographicPosition:
         validator=attrs.validators.instance_of(float),
         kw_only=True,
         )
-    earth_model: EllipsoidModel = attrs.field(
+    earth_ellispoid_model: EllipsoidModel = attrs.field(
         metadata={'description': 'The ellipsoid model'},
         validator=attrs.validators.instance_of(EllipsoidModel),
         kw_only=True,
@@ -68,7 +67,7 @@ class GeographicPosition:
             self.latitude == value.latitude
             and self.longitude == value.longitude
             and self.altitude == value.altitude
-            and self.earth_model == value.earth_model
+            and self.earth_ellispoid_model == value.earth_ellispoid_model
         )
 
 # ------------------------------- OPERATIONS ------------------------------- #
@@ -97,5 +96,5 @@ class GeographicPosition:
             math.isclose(self.latitude, value.latitude, rel_tol=rel_tol)
             and math.isclose(self.longitude, value.longitude, rel_tol=rel_tol)
             and math.isclose(self.altitude, value.altitude, rel_tol=rel_tol)
-            and self.earth_model == value.earth_model
+            and self.earth_ellispoid_model == value.earth_ellispoid_model
         )

@@ -23,7 +23,7 @@ def mock_validate_existing_file():
             result = validate_existing_file('test_file.txt')
             assert result == 'test_file.txt'
     """
-    with patch('yggdrasil.validation.files.validate_existing_file') as mock:
+    with patch('yggdrasil.utils.argument_validation.files.validate_existing_file') as mock:
         mock.side_effect = lambda x: x
         yield mock
 

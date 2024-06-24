@@ -22,7 +22,7 @@ def mock_validate_existing_file():
             # Perform test actions
             pass
     """
-    with patch('yggdrasil.validation.files.validate_existing_file') as mock:
+    with patch('yggdrasil.utils.argument_validation.files.validate_existing_file') as mock:
         mock.side_effect = lambda x: x
         yield mock
 

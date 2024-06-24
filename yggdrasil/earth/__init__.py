@@ -1,3 +1,3 @@
 """Earth Model Tools."""
 
-from .earth_model import *
+from .earth_ellipsoid_model import *

@@ -4,7 +4,7 @@ import importlib.resources as pkg_resources
 from pathlib import Path
 
 
-from ...validation.files import validate_file_extension
+from ...utils.argument_validation.files import validate_file_extension
 from ..base import HTMLAdditionalFile
 from .blocks import InlineHTMLComponent, HTMLBlock
 from .text import Text

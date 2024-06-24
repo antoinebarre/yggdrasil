@@ -5,7 +5,7 @@ from dataclasses import KW_ONLY, dataclass, field
 from pathlib import Path
 from typing import Callable
 
-from ...validation.files import validate_existing_file
+from ..argument_validation.files import validate_existing_file
 
 __all__ = ["SafeFile", "md5_checksum", "sha256_checksum","File"]
 

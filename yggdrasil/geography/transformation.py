@@ -1,10 +1,11 @@
+"""Transformation functions for converting between different coordinate systems."""
 
 import math
 from beartype import beartype
 import numpy as np
 from .position import Position
 from .geographic_position import GeographicPosition
-from ..earth import EllipsoidModel, wgs84
+from ..earth import EllipsoidModel, earth_ellipsoid_model
 
 @beartype
 def LLA2ECEF(  #pylint: disable=invalid-name
@@ -19,8 +20,8 @@ def LLA2ECEF(  #pylint: disable=invalid-name
         Position: The Position object.
     """
     # constante
-    a = LLA.earth_model.a
-    e2 = LLA.earth_model.e**2
+    a = LLA.earth_ellispoid_model.a
+    e2 = LLA.earth_ellispoid_model.e**2
 
     # transofrmation algorithm
     sinlat = np.sin(LLA.latitude)
@@ -37,9 +38,9 @@ def LLA2ECEF(  #pylint: disable=invalid-name
 
 
 @beartype
-def ECEF2LLA(
+def ECEF2LLA(  #pylint: disable=invalid-name
     X_ECEF: Position, #pylint: disable=invalid-name
-    ellipsoid: EllipsoidModel = wgs84()
+    ellipsoid: EllipsoidModel = earth_ellipsoid_model()
 ) -> 'GeographicPosition':
     """
     Converts a position in Earth-Centered Earth-Fixed (ECEF) coordinates to
@@ -109,4 +110,4 @@ def ECEF2LLA(
         latitude=latitude,
         longitude=longitude,
         altitude=altitude,
-        earth_model=ellipsoid)
+        earth_ellispoid_model=ellipsoid)

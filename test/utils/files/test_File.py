@@ -23,7 +23,7 @@ def fake_checksum(file_path: Path) -> str:  #pylint: disable=unused-argument
 
 @pytest.fixture
 def mock_validate_existing_file():
-    with patch('yggdrasil.validation.files.validate_existing_file') as mock:
+    with patch('yggdrasil.utils.argument_validation.files.validate_existing_file') as mock:
         mock.side_effect = lambda x: x
         yield mock
 

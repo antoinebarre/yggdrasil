@@ -1,6 +1,6 @@
 ''' This module contains the tests for the integer validation functions. '''
 import pytest
-from yggdrasil.validation.int import validate_integer, validate_positive_integer
+from yggdrasil.utils.argument_validation.int import validate_integer, validate_positive_integer
 
 # Test validate_integer function
 def test_validate_integer():

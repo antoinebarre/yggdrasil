@@ -1,7 +1,7 @@
 """Lorem Ipsum text generator."""
 
 import random
-from yggdrasil.validation import validate_positive_integer
+from ..argument_validation.int import validate_positive_integer
 
 
 DATA = """

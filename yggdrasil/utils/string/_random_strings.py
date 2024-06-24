@@ -5,7 +5,7 @@ import string
 import textwrap
 import time
 
-from ...validation.int import validate_positive_integer
+from ..argument_validation.int import validate_positive_integer
 
 __all__ = [
     "generate_random_string",
