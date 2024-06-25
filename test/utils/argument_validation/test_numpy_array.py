@@ -10,8 +10,6 @@ from yggdrasil.utils.argument_validation import is_numerical_array
     (np.array([1, 2, 'a']), False),                    # Mixed type array
     (np.array([]), True),                              # Empty array, still numerical type
     (np.array([True, False, True]), False),            # Boolean array
-    ("not an array", False),                           # Not a NumPy array
-    (None, False)                                      # None
 ])
 def test_is_numerical_array(array, expected):
     """

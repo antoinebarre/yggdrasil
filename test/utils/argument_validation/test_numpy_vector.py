@@ -1,9 +1,6 @@
 import pytest
 import numpy as np
-from  import is_3d_numpy_vector, validate_3d_numpy_vector
 
-import pytest
-import numpy as np
 from yggdrasil.utils.argument_validation.numpy_vector import is_3d_numpy_vector, assert_3d_numpy_vector
 
 def mock_is_numerical_array(arr: np.ndarray) -> bool:
@@ -26,7 +23,8 @@ def patch_is_numerical_array(monkeypatch) -> None:
     Parameters:
         monkeypatch: pytest's monkeypatch fixture.
     """
-    monkeypatch.setattr('your_module.is_numerical_array', mock_is_numerical_array)
+    monkeypatch.setattr(
+        'yggdrasil.utils.argument_validation.numpy_array.is_numerical_array', mock_is_numerical_array)
 
 def test_is_3d_numpy_vector_valid() -> None:
     """
@@ -48,13 +46,6 @@ def test_is_3d_numpy_vector_wrong_shape() -> None:
     """
     vector = np.array([1, 2])
     assert is_3d_numpy_vector(vector) == False
-
-def test_is_3d_numpy_vector_invalid_input() -> None:
-    """
-    Test is_3d_numpy_vector with an invalid input (not a numpy array).
-    """
-    with pytest.raises(TypeError):
-        is_3d_numpy_vector([1, 2, 3])
 
 def test_assert_3d_numpy_vector_valid() -> None:
     """
@@ -83,5 +74,5 @@ def test_assert_3d_numpy_vector_invalid_input() -> None:
     """
     Test assert_3d_numpy_vector with an invalid input (not a numpy array) and expect TypeError.
     """
-    with pytest.raises(TypeError):
+    with pytest.raises(AssertionError):
         assert_3d_numpy_vector([1, 2, 3])

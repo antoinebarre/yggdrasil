@@ -34,10 +34,6 @@ class EllipsoidModel():
         metadata={'description': 'The J2 coefficient of the ellipsoid'},
         validator=attrs.validators.instance_of(float),
         )
-    earth_rotation_rate: float = attrs.field(
-        metadata={'description': 'The Earth rotation rate'},
-        validator=attrs.validators.instance_of(float),
-        )
 
 # ----------------------------- DUNDER_METHODS ----------------------------- #
     def __eq__(self, value: object) -> bool:
@@ -61,7 +57,6 @@ class EllipsoidModel():
             and self.semi_major_axis == value.semi_major_axis
             and self.flattening == value.flattening
             and self.j2 == value.j2
-            and self.earth_rotation_rate == value.earth_rotation_rate
         )
 
 # --------------------------- PROPERTIES --------------------------- #
@@ -122,7 +117,6 @@ def wgs84() -> EllipsoidModel:
         semi_major_axis=6378137.0,
         flattening=1/298.257223563,
         j2=1.08263e-3,
-        earth_rotation_rate=7.292115e-5
     )
 
 def spherical_earth() -> EllipsoidModel:
@@ -136,7 +130,6 @@ def spherical_earth() -> EllipsoidModel:
         semi_major_axis=6371127.0,
         flattening=0.0,
         j2=0.0,
-        earth_rotation_rate=7.292115e-5
     )
 
 AVAILABLE_ELLIPSOIDS = {
@@ -145,14 +138,12 @@ AVAILABLE_ELLIPSOIDS = {
         semi_major_axis=6378137.0,
         flattening=1/298.257223563,
         j2=1.08263e-3,
-        earth_rotation_rate=7.292115e-5
     ),
     "Spherical Earth": EllipsoidModel(
         name="Spherical Earth",
         semi_major_axis=6371127.0,
         flattening=0.0,
         j2=0.0,
-        earth_rotation_rate=7.292115e-5
     )
 }
 
