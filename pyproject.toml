@@ -21,6 +21,7 @@ matplotlib = "^3.8.4"
 scipy = "^1.13.1"
 pydantic = "^2.7.4"
 nptyping = "^2.5.0"
+setuptools = "^70.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
