@@ -19,17 +19,17 @@ from typing import Union
 from beartype import beartype
 import numpy as np
 
-from ..utils.argument_validation.numpy_matrix import assert_3x3_numerical_matrix
-from ..earth import EllipsoidModel, earth_ellipsoid_model
-from ..math.rotation_matrix import rotx, roty, rotz
-from ..types import FloatNumber
+from ..earth import EarthConstants
+from ..math import rotx, roty, rotz, Matrix
+from ..utils.argument_validation.float import (
+    validate_positive_float,
+    validate_float)
 
 
-@beartype
 def dcm_eci2ecef(
-        dt: FloatNumber,
-        earth_model: EllipsoidModel = earth_ellipsoid_model()
-        ) -> np.ndarray:
+        dt: float,
+        earth_rotation_rate: float = EarthConstants.earth_rotation_rate
+        ) -> Matrix:
     """Provide the Direct Cosine Matrix to convert Earth-centered inertial
      (ECI) to Earth-centered Earth-fixed (ECEF) coordinates
 
@@ -41,73 +41,78 @@ def dcm_eci2ecef(
     Args:
         dt (float): time in second since the user defined the Earth Center
         Inertial (ECI) frame. This value shall be positive (>=0)
+        earth_rotation_rate (float, optional): Earth rotation rate in rad/s.
+         Defaults to EarthConstants.earth_rotation_rate (WGS-84).
 
     Returns:
-        np.ndarray: rotational matrix [3x3] to transform a vector in ECI in
+        Matrix: rotational matrix [3x3] to transform a vector in ECI in
         the ECEF frame
     """
 
     # voir https://github.com/NavPy/NavPy/blob/master/navpy/core/navpy.py
 
-    return rotz(
-        earth_model.earth_rotation_rate * dt
-        )
+    rot_angle = validate_positive_float(earth_rotation_rate * dt)
+
+    return rotz(rot_angle)
 
 
-@beartype
+
 def dcm_ecef2ned(
-        latitude: FloatNumber,
-        longitude: FloatNumber
-        ) -> np.ndarray:
+        latitude: float,
+        longitude: float
+        ) -> Matrix:
     """Calculate the rotational matrix from the ECEF (Earth Centered Earth
     Fixed) to NED (North Earth Down) to transform a vector defined in ECEF
     to NED frame
 
     Args:
-        latitude (float, np.float64): latitude of the geographical
+        latitude (float): latitude of the geographical
           point in radians
-        longitude (float, np.float64): longitude of the geographical
+        longitude (float): longitude of the geographical
           point in radians
 
     Returns:
-        np.ndarray: Direct Cosinus Matrix from ECEF to NED
+        Matrix: Direct Cosinus Matrix from ECEF to NED
     """
+    lat = validate_float(latitude)
+    long = validate_float(longitude)
 
-    return np.matmul(roty(-(float(latitude) + np.pi / 2)), rotz(longitude))
+    return  roty(-np.pi/2) @ (roty(-lat) @ rotz(long))
 
 
-@beartype
 def dcm_ecef2enu(
-        latitude: Union[float, np.float64],
-        longitude: Union[float, np.float64]
-        ) -> np.ndarray:
+        latitude: float,
+        longitude: float
+        ) -> Matrix:
     """Calculate the rotational matrix from the ECEF (Earth Centered Earth
      Fixed) to ENU (East North Up) to transform a vector defined in ECEF to
      ENU frame
 
     Args:
-        latitude (float, np.float64): latitude of the geographical
+        latitude (float): latitude of the geographical
           point in radians
-        longitude (float, np.float64): longitude of the geographical
+        longitude (float): longitude of the geographical
           point in radians
 
     Reference:
         https://gssc.esa.int/navipedia/index.php/Transformations_between_ECEF_and_ENU_coordinates
 
     Returns:
-        np.ndarray: Direct Cosinus Matrix from ECEF to ENU
+        Matrix: Direct Cosinus Matrix from ECEF to ENU
     """
+    lat = validate_float(latitude)
+    long = validate_float(longitude)
 
     return (
-        rotx(np.pi / 2) @ rotz(np.pi / 2) @ roty(-latitude) @ rotz(longitude)
+        rotx(np.pi / 2) @ (rotz(np.pi / 2) @ (roty(-lat) @ rotz(long)))
     )
 
 
-def angle2dcm(rotAngle1: FloatNumber,
-              rotAngle2: FloatNumber,
-              rotAngle3: FloatNumber,
+def angle2dcm(rotAngle1: float,
+              rotAngle2: float,
+              rotAngle3: float,
               rotationSequence: str = 'ZYX'
-              ) -> np.ndarray:
+              ) -> Matrix:
     """This function converts Euler Angle into Direction Cosine Matrix (DCM).
     Args:
         rotAngle1 (float, np.float64): first angle of roation in radians
@@ -123,15 +128,20 @@ def angle2dcm(rotAngle1: FloatNumber,
         np.ndarray: direction cosine matrix associated to the rotation angles
     """
 
+    # validate the input
+    validate_float(rotAngle1)
+    validate_float(rotAngle2)
+    validate_float(rotAngle3)
+
     if rotationSequence.upper() == "ZYX":
         return rotx(rotAngle3) @ roty(rotAngle2) @ rotz(rotAngle1)
     msg = (f"Rotation sequence {rotationSequence.upper()}"
            " is not implemented.")
     raise NotImplementedError(msg)
 
-@beartype
+
 def dcm2angle(
-        dcm: np.ndarray,
+        dcm: Matrix,
         rotationSequence: str = 'ZYX'
         ) -> tuple[float, float, float]:
     """This function converts a Direction Cosine Matrix (DCM) into the three
@@ -148,7 +158,7 @@ def dcm2angle(
     like quaternions.
 
     Args:
-        dcm (np.ndarray): direction cosine matrix associated
+        dcm (Matrix): direction cosine matrix associated
             to the rotation angles
         rotationSequence (str, optional): sequence of rotations.
             Defaults to 'ZYX'.
@@ -163,7 +173,7 @@ def dcm2angle(
     """
 
     # validate the input
-    assert_3x3_numerical_matrix(dcm)
+    Matrix.validate_matrix(dcm)
 
 
     if rotationSequence.upper() == "ZYX":
@@ -172,6 +182,7 @@ def dcm2angle(
         rotAngle3 = np.arctan2(dcm[1, 2], dcm[2, 2])  # Roll
 
         return rotAngle1, rotAngle2, rotAngle3
+    #TODO : implement test based on Mathworks test
     else:
         msg = (f"Rotation sequence {rotationSequence.upper()}"
                " is not implemented.")

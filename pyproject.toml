@@ -30,3 +30,13 @@ ipykernel = "^6.29.3"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.MASTER]
+ignore-paths = '^test/.*$'
+
+[tool.hatch.build]
+exclude = [
+  "/.*",
+  "/docs",
+  "/test",
+]

@@ -15,14 +15,17 @@ class Position:
     """
 
     x: float = attrs.field(
+        converter=float,
         metadata={'description': 'The x-coordinate of the ECEF position'},
         validator=attrs.validators.instance_of(float),
     )
     y: float = attrs.field(
+        converter=float,
         metadata={'description': 'The y-coordinate of the ECEF position'},
         validator=attrs.validators.instance_of(float),
     )
     z: float = attrs.field(
+        converter=float,
         metadata={'description': 'The z-coordinate of the ECEF position'},
         validator=attrs.validators.instance_of(float),
     )

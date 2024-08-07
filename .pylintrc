@@ -1,0 +1,14 @@
+[MASTER]
+# List of plugins (as comma separated values of python module names) to load, usually to
+# register additional checkers.
+load-plugins=
+
+# A comma-separated list of package or module names from where C extensions may be loaded.
+extension-pkg-whitelist=
+
+# Add files or directories to the blacklist. They should be base names, not paths.
+ignore=test
+
+# Add files or directories matching the regex patterns to the blacklist. The regex matches
+# against base names, not paths.
+ignore-patterns=

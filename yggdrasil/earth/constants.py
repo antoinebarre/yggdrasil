@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+__all__ = ['EarthConstants']
 
 @dataclass
 class EarthConstants:

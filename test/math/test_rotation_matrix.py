@@ -1,150 +1,123 @@
-"""UNIT TEST FOR BASIC ROTATION"""
-
-
 # import module
 import pytest
 import numpy as np
-from yggdrasil.math.rotation_matrix import rotx,roty,rotz
+from yggdrasil.math.rotation_matrix import rotx, roty, rotz
+from yggdrasil.math.vector import Vector
 
 ABSOLUTE_TOLERANCE = 1e-12
 RELATIVE_TOLERANCE = 1e-6
-NB_DECIMAL = 8
 NB_OBJ = 100
 
 
-@pytest.fixture
-def randomAngleArray():
-    return np.random.uniform(low=-6*np.pi, #minimal value
-                                         high=6*np.pi, #maximum value 
-                                         size=NB_OBJ) #number of elements
-
 
 def test_rotx_error():
-    """Check appropriate behavior with wrong inputs
-    """
+    """Check appropriate behavior with wrong inputs"""
     with pytest.raises(Exception):
-        rotx("a")
+        rotx("a") # type: ignore
     with pytest.raises(Exception):
-        rotx([1,2])
+        rotx([1, 2]) # type: ignore
 
-def test_rotx_determinant(randomAngleArray):
-    """The function rotx shall have a determinant equal to 1
-    """
-    for angle in randomAngleArray:
-        det = np.linalg.det(rotx(angle))
 
-        message = f"For an angle of the determinant of a rotation matrix shall be equal to 1.0 [cureent : {det}]"
+@pytest.mark.parametrize("angle", np.random.uniform(low=-6 * np.pi, high=6 * np.pi, size=NB_OBJ))
+def test_rotx_determinant(angle):
+    """The function rotx shall have a determinant equal to 1"""
+    det = np.linalg.det(rotx(angle))
+    message = f"For an angle of the determinant of a rotation matrix shall be equal to 1.0 [current: {det}]"
+    assert det == pytest.approx(1.0, abs=ABSOLUTE_TOLERANCE, rel=RELATIVE_TOLERANCE), message
 
-        assert det == pytest.approx(1.0,abs=ABSOLUTE_TOLERANCE,rel=RELATIVE_TOLERANCE) , message
 
-def test_rotx_behaviour():
-    
-    testCases = [
-        [90, np.array([10,0,0]), np.array([10,0,0])],
-        [90, np.array([0,9,0]), np.array([0,0,-9])],
-        [90, np.array([0,0,4]), np.array([0,4,0])],
-        [180, np.array([0,3,0]), np.array([0,-3,0])],
-        [270, np.array([0,3,0]), np.array([0,0,3])],
-    ]
+@pytest.mark.parametrize("angle, vector, expected", [
+    (90, Vector(10, 0, 0), Vector(10, 0, 0)),
+    (90, Vector(0, 9, 0), Vector(0, 0, -9)),
+    (90, Vector(0, 0, 4), Vector(0, 4, 0)),
+    (180, Vector(0, 3, 0), Vector(0, -3, 0)),
+    (270, Vector(0, 3, 0), Vector(0, 0, 3)),
+])
+def test_rotx_behaviour(angle, vector, expected):
+    X = rotx(np.deg2rad(angle)) @ vector
+    assert X.is_close(expected, tol=ABSOLUTE_TOLERANCE), f"Expected {expected} but got {X}"
 
-    for testCase in testCases:
-        #behavior :
-        X = apply_rotx(testCase[0], testCase[1])
-        #assess:
-        compare_column_vector(X,testCase[2])
 
-def test_roty_determinant(randomAngleArray):
-    """The function roty shall have a determinant equal to 1
-    """
-    for angle in randomAngleArray:
-        det = np.linalg.det(roty(angle))
+@pytest.mark.parametrize("angle", np.random.uniform(low=-6 * np.pi, high=6 * np.pi, size=NB_OBJ))
+def test_roty_determinant(angle):
+    """The function roty shall have a determinant equal to 1"""
+    det = np.linalg.det(roty(angle))
+    message = f"For an angle of the determinant of a rotation matrix shall be equal to 1.0 [current: {det}]"
+    assert det == pytest.approx(1.0, abs=ABSOLUTE_TOLERANCE, rel=RELATIVE_TOLERANCE), message
 
-        message = f"For an angle of the determinant of a rotation matrix shall be equal to 1.0 [cureent : {det}]"
 
-        assert det == pytest.approx(1.0,abs=ABSOLUTE_TOLERANCE,rel=RELATIVE_TOLERANCE) , message
+@pytest.mark.parametrize("angle, vector, expected", [
+    (90, Vector(0, 10, 0), Vector(0, 10, 0)),
+    (90, Vector(4, 0, 0), Vector(0, 0, 4)),
+    (90, Vector(0, 0, 4), Vector(-4, 0, 0)),
+    (180, Vector(3, 0, 0), Vector(-3, 0, 0)),
+    (270, Vector(3, 0, 0), Vector(0, 0, -3)),
+])
+def test_roty_behaviour(angle, vector, expected):
+    X = roty(np.deg2rad(angle)) @ vector
+    assert X.is_close(expected, tol=ABSOLUTE_TOLERANCE), f"Expected {expected} but got {X}"
 
-def test_roty_behaviour():
-    
-    testCases = [
-        [90, np.array([0,10,0]), np.array([0,10,0])],
-        [90, np.array([4,0,0]), np.array([0,0,4])],
-        [90, np.array([0,0,4]), np.array([-4,0,0])],
-        [180, np.array([3,0,0]), np.array([-3,0,0])],
-        [270, np.array([3,0,0]), np.array([0,0,-3])],
-    ]
-
-    for testCase in testCases:
-        #behavior :
-        X = apply_roty(testCase[0], testCase[1])
-        #assess:
-        compare_column_vector(X,testCase[2])
 
 def test_roty_error():
-    """Check appropriate behavior with wrong inputs
-    """
+    """Check appropriate behavior with wrong inputs"""
     with pytest.raises(Exception):
-        roty("a")
-        
+        roty("a") # type: ignore
+
     with pytest.raises(Exception):
-        roty([1,2])
+        roty([1, 2]) # type: ignore
 
-def test_rotz_determinant(randomAngleArray):
-    """The function roty shall have a determinant equal to 1
-    """
-    for angle in randomAngleArray:
-        det = np.linalg.det(rotz(angle))
 
-        message = f"For an angle of the determinant of a rotation matrix shall be equal to 1.0 [cureent : {det}]"
+@pytest.mark.parametrize("angle", np.random.uniform(low=-6 * np.pi, high=6 * np.pi, size=NB_OBJ))
+def test_rotz_determinant(angle):
+    """The function rotz shall have a determinant equal to 1"""
+    det = np.linalg.det(rotz(angle))
+    message = f"For an angle of the determinant of a rotation matrix shall be equal to 1.0 [current: {det}]"
+    assert det == pytest.approx(1.0, abs=ABSOLUTE_TOLERANCE, rel=RELATIVE_TOLERANCE), message
 
-        assert det == pytest.approx(1.0,abs=ABSOLUTE_TOLERANCE,rel=RELATIVE_TOLERANCE) , message
 
-def test_rotz_behaviour():
-    
-    testCases = [
-        [90, np.array([0,0,10]), np.array([0,0,10])],
-        [90, np.array([4,0,0]), np.array([0,-4,0])],
-        [90, np.array([0,4,0]), np.array([4,0,0])],
-        [180, np.array([3,0,0]), np.array([-3,0,0])],
-        [270, np.array([3,0,0]), np.array([0,3,0])],
-    ]
+@pytest.mark.parametrize("angle, vector, expected", [
+    (90, Vector(0, 0, 10), Vector(0, 0, 10)),
+    (90, Vector(4, 0, 0), Vector(0, -4, 0)),
+    (90, Vector(0, 4, 0), Vector(4, 0, 0)),
+    (180, Vector(3, 0, 0), Vector(-3, 0, 0)),
+    (270, Vector(3, 0, 0), Vector(0, 3, 0)),
+])
+def test_rotz_behaviour(angle, vector, expected):
+    X = rotz(np.deg2rad(angle)) @ vector
+    assert X.is_close(expected, tol=ABSOLUTE_TOLERANCE), f"Expected {expected} but got {X}"
 
-    for testCase in testCases:
-        #behavior :
-        X = apply_rotz(testCase[0], testCase[1])
-        #assess:
-        compare_column_vector(X,testCase[2])
 
 def test_rotz_error():
-    """Check appropriate behavior with wrong inputs
-    """
+    """Check appropriate behavior with wrong inputs"""
     with pytest.raises(Exception):
-        rotz("a")
+        rotz("a") # type: ignore
     with pytest.raises(Exception):
-        rotz([1,2])
+        rotz([1, 2]) # type: ignore
 
 #---------------- TOOLS ----------------
-def compare_column_vector(X,X_expected,nb_digit= NB_DECIMAL):
-
-    #change 1D to 2D array
-    X_expected=np.reshape(X_expected,(3,-1))
-
-    # Assess dimension
-    assert X.shape == X_expected.shape , f"The dimension of the vector shall be {X_expected.shape} [current:{X.shape} ]"
-
-    #Assess values
-    np.testing.assert_array_almost_equal(X,X_expected,decimal=nb_digit)
-
-def apply_rotx(angle2test,X0):
-    """_change to 2d column vector and apply rotation 
+def compare_column_vector(X: Vector, X_expected: Vector, tol: float = ABSOLUTE_TOLERANCE):
     """
-    return rotx(np.deg2rad(angle2test)) @ np.reshape(X0,(3,-1))
+    Compare two column vectors and assert if they are not close within a given tolerance.
 
-def apply_roty(angle2test,X0):
-    """_change to 2d column vector and apply rotation 
-    """
-    return roty(np.deg2rad(angle2test)) @ np.reshape(X0,(3,-1))
+    Parameters:
+        X (Vector): The actual column vector.
+        X_expected (Vector): The expected column vector.
+        tol (float, optional): The tolerance value. Defaults to ABSOLUTE_TOLERANCE.
 
-def apply_rotz(angle2test,X0):
-    """_change to 2d column vector and apply rotation 
+    Raises:
+        AssertionError: If the actual column vector is not close to the expected column vector.
+
     """
-    return rotz(np.deg2rad(angle2test)) @ np.reshape(X0,(3,-1))
+    assert X.is_close(X_expected, tol=tol), f"Expected {X_expected} but got {X}"
+
+def apply_rotx(angle: float, X0: Vector) -> Vector:
+    """Apply rotation around x-axis"""
+    return rotx(np.deg2rad(angle)) @ X0
+
+def apply_roty(angle: float, X0: Vector) -> Vector:
+    """Apply rotation around y-axis"""
+    return roty(np.deg2rad(angle)) @ X0
+
+def apply_rotz(angle: float, X0: Vector) -> Vector:
+    """Apply rotation around z-axis"""
+    return rotz(np.deg2rad(angle)) @ X0

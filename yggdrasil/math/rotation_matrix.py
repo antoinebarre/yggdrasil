@@ -2,10 +2,8 @@
  Math - Basic Rotations matrix tools
 """
 
-from beartype import beartype
 import numpy as np
-from scipy.spatial.transform import Rotation
-from ..types import  FloatNumber
+from .matrix import Matrix
 
 __all__ = [
     "rotx",
@@ -13,7 +11,7 @@ __all__ = [
     "rotz",
 ]
 
-def rotx(theta: FloatNumber) -> np.ndarray:
+def rotx(theta: float) -> Matrix:
     """Generate a rotation matrix for a rotation around the X-axis.
 
     Args:
@@ -23,48 +21,43 @@ def rotx(theta: FloatNumber) -> np.ndarray:
         np.ndarray: 3x3 rotation matrix representing the rotation around
         the X-axis.
     """
-    return __fundamental_rotation(np.array([1.0, 0, 0]), theta)
+    c, s = np.cos(theta), np.sin(theta)
+    return Matrix(
+        xx=1.0, xy=0.0, xz=0.0,
+        yx=0.0, yy=c, yz=s,
+        zx=0.0, zy=-s, zz=c
+    )
 
-
-def roty(theta: FloatNumber) -> np.ndarray:
+def roty(theta: float) -> Matrix:
     """Generate a rotation matrix for a rotation around the Y-axis.
 
     Args:
-        theta (float, np.float64): Angle in radians for the rotation.
+        theta (float): Angle in radians for the rotation.
 
     Returns:
-        np.ndarray: 3x3 rotation matrix representing the rotation around
+        Matrix: 3x3 rotation matrix representing the rotation around
         the Y-axis.
     """
-    return __fundamental_rotation(np.array([0, 1.0, 0]), theta)
+    c, s = np.cos(theta), np.sin(theta)
+    return Matrix(
+        xx=c, xy=0.0, xz=-s,
+        yx=0.0, yy=1.0, yz=0.0,
+        zx=s, zy=0.0, zz=c
+    )
 
-
-def rotz(theta: FloatNumber) -> np.ndarray:
+def rotz(theta: float) -> Matrix:
     """Generate a rotation matrix for a rotation around the Z-axis.
 
     Args:
-        theta (float, np.float64): Angle in radians for the rotation.
+        theta (float): Angle in radians for the rotation.
 
     Returns:
-        np.ndarray: 3x3 rotation matrix representing the rotation
+        Matrix: 3x3 rotation matrix representing the rotation
         around the Z-axis.
     """
-    return __fundamental_rotation(np.array([0, 0, 1.0]), theta)
-
-
-@beartype
-def __fundamental_rotation(
-        axis: np.ndarray,
-        theta: FloatNumber
-        ) -> np.ndarray:
-    """Create a rotation matrix based on angle and axis.
-
-    Args:
-        axis (Float64Array3): The rotation axis as a 3D vector.
-        theta (float, np.float64): Angle in radians for the rotation.
-
-    Returns:
-        np.ndarray: 3x3 rotation matrix.
-    """
-    theta = float(theta)
-    return Rotation.from_rotvec(theta * axis.reshape((3,))).as_matrix().T
+    c, s = np.cos(theta), np.sin(theta)
+    return Matrix(
+        xx=c, xy=s, xz=0.0,
+        yx=-s, yy=c, yz=0.0,
+        zx=0.0, zy=0.0, zz=1.0
+   )

@@ -47,7 +47,7 @@ def validate_positive_integer(value: int) -> int:
 
     if value < 0:
         raise ValueError('Expected a positive integer.')
-    
+
     # warning deprecated
     warnings.warn("This function is deprecated. Use assert function instead.")
 
