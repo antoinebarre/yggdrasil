@@ -9,8 +9,85 @@ __all__ = ["Matrix"]
 
 MV = TypeVar('MV', bound=Union['Matrix', 'Vector'])
 
+
+
 @attrs.define(slots=True)
 class Matrix:
+    """
+    A class representing a 3x3 matrix.
+
+    Attributes:
+        xx (float): The value at position (0, 0) in the matrix.
+        xy (float): The value at position (0, 1) in the matrix.
+        xz (float): The value at position (0, 2) in the matrix.
+        yx (float): The value at position (1, 0) in the matrix.
+        yy (float): The value at position (1, 1) in the matrix.
+        yz (float): The value at position (1, 2) in the matrix.
+        zx (float): The value at position (2, 0) in the matrix.
+        zy (float): The value at position (2, 1) in the matrix.
+        zz (float): The value at position (2, 2) in the matrix.
+
+    Methods:
+        from_list(data: list[list[float]]) -> Matrix:
+            Create a matrix from a 3x3 list of lists.
+
+        is_matrix(matrix: Any) -> bool:
+            Check if an object is a matrix.
+
+        validate_matrix(matrix: Any) -> Matrix:
+            Validate a matrix.
+
+        __str__() -> str:
+            Return a string representation of the matrix.
+
+        __repr__() -> str:
+            Return a string representation of the matrix that can be used to recreate it.
+
+        __array__() -> np.ndarray:
+            Convert the matrix to a numpy array.
+
+        __getitem__(indices) -> float:
+            Get the value at the specified indices in the matrix.
+
+        __add__(other: Matrix) -> Matrix:
+            Add another matrix to this matrix.
+
+        __sub__(other: Matrix) -> Matrix:
+            Subtract another matrix from this matrix.
+
+        __neg__() -> Matrix:
+            Negate the matrix.
+
+        transpose() -> Matrix:
+            Transpose the matrix.
+
+        __mul__(scalar: float) -> Matrix:
+            Multiply the matrix by a scalar.
+
+        identity() -> Matrix:
+            Return the identity matrix.
+
+        __matmul__(other: Union[Vector, Matrix]) -> Union[Vector, Matrix]:
+            Multiply the matrix by another matrix or a vector.
+
+        __abs__() -> float:
+            Calculate the determinant of the matrix.
+
+        det() -> float:
+            Calculate the determinant of the matrix.
+
+        __eq__(value: object) -> bool:
+            Check if the matrix is equal to another matrix.
+
+        is_close(value: object, tol: float = 1e-10) -> bool:
+            Check if the matrix is approximately equal to another matrix.
+
+        attributes_list() -> list[str]:
+            Get a list of attribute names in the matrix.
+
+        __pow__(scalar: int) -> Matrix:
+            Raise the matrix to a scalar power.
+    """
     xx: float = attrs.field(
         converter=float,
         validator=attrs.validators.instance_of(float),

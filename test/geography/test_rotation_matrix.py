@@ -7,10 +7,10 @@ import numpy as np
 
 from yggdrasil.geography.rotation_matrix import (dcm_eci2ecef, dcm_ecef2ned,
                                                dcm_ecef2enu, angle2dcm,
-                                               dcm2angle)
+                                               )
 from yggdrasil.math import Matrix, Vector
-import numpy as np
-from yggdrasil.geography.rotation_matrix import dcm_ecef2ned
+
+
 
 ABSOLUTE_TOLERANCE = 1e-12
 RELATIVE_TOLERANCE = 1e-6

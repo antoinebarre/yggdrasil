@@ -15,8 +15,8 @@ def test_position_initialization():
     assert pos.y == 2.0
     assert pos.z == 3.0
 
-    with pytest.raises(TypeError):
-        Position(x=1, y=2, z=3)
+    with pytest.raises(ValueError):
+        Position(x="a", y=2, z=3)
 
 
 def test_position_str_and_repr():

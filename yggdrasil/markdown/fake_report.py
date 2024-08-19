@@ -5,7 +5,7 @@ import tempfile
 
 from matplotlib import pyplot as plt
 
-from yggdrasil.utils.files.checksum import SafeFile
+from yggdrasil.utils.files.checksum import File
 from yggdrasil.utils.images.fake import create_random_png
 from .document import MarkdownDocument
 from . import components
@@ -13,7 +13,7 @@ from ..utils.string import LoremIpsum
 
 __all__ = ["create_markdown_report"]
 
-def create_markdown_report(md_file_path:Path) -> list[SafeFile]:
+def create_markdown_report(md_file_path:Path) -> list[File]:
     """
     Creates a markdown report using YGGDRASIL.
 

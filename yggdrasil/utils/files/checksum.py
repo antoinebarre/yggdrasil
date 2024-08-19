@@ -4,10 +4,13 @@ import hashlib
 from dataclasses import KW_ONLY, dataclass, field
 from pathlib import Path
 from typing import Callable
+from datetime import datetime, timezone
+
+import attrs
 
 from ..argument_validation.files import validate_existing_file
 
-__all__ = ["SafeFile", "md5_checksum", "sha256_checksum","File"]
+__all__ = [ "md5_checksum", "sha256_checksum","File", "FileProperties"]
 
 def md5_checksum(file_path: Path) -> str:
     """
@@ -55,57 +58,6 @@ def sha256_checksum(file_path: Path) -> str:
             sha256.update(chunk)
     # Return the checksum
     return sha256.hexdigest()
-
-@dataclass(frozen=True)
-class SafeFile:
-    """
-    Represents a safe file with a file path and checksum.
-
-    Attributes:
-        file_path (Path): The path to the file.
-        checksum_method (Callable[[Path], str]): The method used to calculate
-        the checksum. Default is md5_checksum.
-        checksum (str): The calculated checksum of the file.
-
-    Methods:
-        __post_init__(): Validates the file path and calculates the checksum.
-        __repr__(): Returns a string representation of the SafeFile object.
-        __str__(): Returns a string representation of the SafeFile object.
-    """
-    file_path: Path
-    _ : KW_ONLY
-    checksum_method: Callable[[Path], str] = md5_checksum
-    checksum: str = field(init=False)
-
-    def __post_init__(self):
-        # Calculate and set the checksum
-        checksum_value = self.checksum_method(self.file_path)
-        object.__setattr__(self, 'checksum', checksum_value)
-
-    def __repr__(self) -> str:
-        return (
-            f"SafeFile(file_path={self.file_path!r},"
-            f" checksum={self.checksum!r},"
-            f" checksum_method={self.checksum_method.__name__!r})")
-
-    def __str__(self) -> str:
-        return (
-            f"SafeFile: {self.file_path}"
-            f" with checksum {self.checksum}"
-            f" (method: {self.checksum_method.__name__})")
-
-    @classmethod
-    def from_list(cls, file_list: list[Path]) -> list['SafeFile']:
-        """
-        Creates a list of SafeFile objects from a list of file paths.
-
-        Args:
-            file_list (list): A list of file paths.
-
-        Returns:
-            list: A list of SafeFile objects.
-        """
-        return [cls(file_path=Path(file_path)) for file_path in file_list]
 
 @dataclass(frozen=True)
 class File:
@@ -221,3 +173,135 @@ class File:
         Returns the file extension.
         """
         return self.path.suffix
+
+    @property
+    def last_modified(self) -> str:
+        """
+        Returns the last modified time (UTC) of the file.
+        """
+        return datetime.fromtimestamp(
+            self.path.stat().st_mtime,
+            tz=timezone.utc
+            ).isoformat()
+
+
+@attrs.define(slots=True, frozen=True)
+class FileProperties:
+    """Represents properties of a file.
+
+    Attributes:
+        filepath (Path): The path to the file.
+        checksum_method (Callable[[Path], str]): The method used to calculate the checksum.
+
+    Properties:
+        checksum (str): The checksum of the file.
+        size (int): The size of the file in bytes.
+        name (str): The name of the file.
+        parent (Path): The parent directory of the file.
+        extension (str): The file extension.
+        last_modified (str): The last modified time (UTC) of the file.
+
+    Methods:
+        __str__(): Returns a string representation of the FileProperties object.
+        __repr__(): Returns a string representation of the FileProperties object that can be used to recreate the object.
+        __eq__(value: object) -> bool: Checks if two FileProperties objects are equal.
+    """
+
+    filepath : Path = attrs.field(
+        metadata={'description': 'The path to the file'},
+        converter=Path,
+        )
+    checksum_method:Callable[[Path], str] = attrs.field(
+        metadata={'description': 'The method used to calculate the checksum'},
+        default=md5_checksum,
+        )
+
+    @filepath.validator
+    def _validate_path(self, attribute, value:Path):
+        if not value.is_file():
+            raise ValueError(
+                f"The path {value} does not represent an existing file.")
+
+    @checksum_method.validator
+    def _validate_checksum_method(
+        self,
+        attribute,
+        value:Callable[[Path], str]):
+        if not callable(value):
+            raise ValueError(
+                "The checksum method must be a callable function.")
+
+
+    @property
+    def checksum(self) -> str:
+        """
+        Returns the checksum of the file.
+        """
+        return self.checksum_method(self.filepath)
+
+    @property
+    def size(self) -> int:
+        """
+        Returns the size of the file in bytes.
+        """
+        return self.filepath.stat().st_size
+
+    @property
+    def name(self) -> str:
+        """
+        Returns the name of the file.
+        """
+        return self.filepath.name
+
+    @property
+    def parent(self) -> Path:
+        """
+        Returns the parent directory of the file.
+        """
+        return self.filepath.parent
+
+    @property
+    def extension(self) -> str:
+        """
+        Returns the file extension.
+        """
+        return self.filepath.suffix
+
+    @property
+    def last_modified(self) -> str:
+        """
+        Returns the last modified time (UTC) of the file.
+        """
+        return datetime.fromtimestamp(
+            self.filepath.stat().st_mtime,
+            tz=timezone.utc
+            ).isoformat()
+
+    def __str__(self) -> str:
+        return (
+            f"File: {self.filepath}\n"
+            f" - checksum: {self.checksum} (method: {self.checksum_method.__name__})\n"
+            f" - size: {self.size} bytes\n"
+            f" - last modified: {self.last_modified}\n"
+            )
+
+    def __repr__(self) -> str:
+        return (
+            f"FileProperties(filepath={self.filepath!r},"
+            f" checksum_method={self.checksum_method.__name__!r})")
+
+    def __eq__(self, value: object) -> bool:
+        """
+        Checks if two FileProperties objects are equal.
+
+        Args:
+            value (object): The object to compare with.
+
+        Returns:
+            bool: True if the objects are equal, False otherwise.
+        """
+        if not isinstance(value, FileProperties):
+            return False
+        return (
+            self.checksum == value.checksum
+            and self.checksum_method == value.checksum_method)
