@@ -225,7 +225,7 @@ class FileProperties:
     @checksum_method.validator
     def _validate_checksum_method(
         self,
-        attribute,
+        attribute,  # pylint: disable=unused-argument
         value:Callable[[Path], str]):
         if not callable(value):
             raise ValueError(
